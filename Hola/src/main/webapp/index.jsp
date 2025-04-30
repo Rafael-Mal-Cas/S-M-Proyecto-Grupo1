@@ -4,11 +4,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SM-G1</title>
+<title>Hola</title>
 </head>
 <body>
-
-<h1>Hola Mundo de Guillermo DAM</h1>
-
+<h1>Hola</h1>
 </body>
 </html>
