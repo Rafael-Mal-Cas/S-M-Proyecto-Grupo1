@@ -24,7 +24,7 @@ public class loginServer extends HttpServlet {
             if (rs.next()) {
                 String storedHash = rs.getString("password");
 
-                // Verificar la contraseña utilizando BCrypt o algo asi
+                // Verificar la contraseña utilizando BCrypt o algo asi y mas
                 if (BCrypt.checkpw(password, storedHash)) {
                     // Login exitoso: guardar usuario en la sesión
                     HttpSession session = request.getSession();
