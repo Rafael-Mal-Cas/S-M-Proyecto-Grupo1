@@ -23,6 +23,7 @@ public class InicializadorUsuarios implements ServletContextListener {
             rs.close();
             checkStmt.close();
 
+            //HOLA
             // Insertar usuarios si no existen
             if (total == 0) {
                 String sqlInsert = 
