@@ -5,6 +5,6 @@ USE testweb;
 CREATE TABLE IF NOT EXISTS usuarios (
     ID INT AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL,
-    password VARCHAR(60) NOT NULL, -- 60 caracteres para almacenar hash BCrypt
+    password VARCHAR(60) NOT NULL, -- Hash de BCrypt tiene 60 caracteres
     PRIMARY KEY(ID)
 );

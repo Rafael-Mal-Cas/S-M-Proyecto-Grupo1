@@ -1,50 +1,45 @@
 package servlets;
 
-import utils.DBConnection;
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import java.io.IOException;
-import java.sql.*;
-import org.mindrot.jbcrypt.BCrypt;
+import java.io.*;
+import java.util.*;
 
 @WebServlet("/loginServer")
 public class loginServer extends HttpServlet {
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
 
-        try (Connection conn = DBConnection.getConnection()) {
-            String sql = "SELECT password FROM testweb.usuarios WHERE username = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
+        String username = request.getParameter("usuario");
+        String password = request.getParameter("clave");
 
-            if (rs.next()) {
-                String storedHash = rs.getString("password");
+        // Verificar el usuario y la contraseña
+        boolean usuarioEncontrado = false;
 
-                // Verificar la contraseña utilizando BCrypt
-                if (BCrypt.checkpw(password, storedHash)) {
-                    // Login exitoso: guardar usuario en la sesión
-                    HttpSession session = request.getSession();
-                    session.setAttribute("username", username);
+        // Usar los usuarios inicializados en InicializadorUsuarios.java
+        List<String[]> usuarios = (List<String[]>) getServletContext().getAttribute("usuarios");
 
-                    // Redirigir a Final.jsp
-                    response.sendRedirect("Final.jsp");
-                } else {
-                    // Contraseña incorrecta
-                    request.setAttribute("error", "Credenciales incorrectas");
-                    request.getRequestDispatcher("login.jsp").forward(request, response);
+        if (usuarios != null) {
+            for (String[] usuario : usuarios) {
+                // Verificar si el nombre de usuario y la contraseña coinciden
+                if (usuario[0].equals(username) && usuario[1].equals(password)) {
+                    usuarioEncontrado = true;
+                    break;
                 }
-            } else {
-                // Usuario no encontrado
-                request.setAttribute("error", "Usuario no encontrado");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp");
+        }
+
+        if (usuarioEncontrado) {
+            // Usuario encontrado, iniciar sesión
+            request.getSession().setAttribute("username", username);
+            response.sendRedirect("index.jsp");  // Redirigir a la página principal
+        } else {
+            // Usuario no encontrado o contraseña incorrecta
+            request.setAttribute("error", "Nombre de usuario o contraseña incorrectos.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 }
