@@ -6,7 +6,7 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.*;
 
-@WebServlet("/registroServer")
+@WebServlet("/registroServer") //s
 public class RegistroUsuarioServlet extends HttpServlet {
 
     @Override
