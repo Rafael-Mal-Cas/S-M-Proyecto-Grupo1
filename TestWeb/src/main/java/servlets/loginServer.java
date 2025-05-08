@@ -16,7 +16,7 @@ public class loginServer extends HttpServlet {
         String username = request.getParameter("usuario");
         String password = request.getParameter("clave");
 
-        // Verificar el usuario y la contraseña
+        // Verificar el  usuario y la contraseña
         boolean usuarioEncontrado = false;
 
         // Usar los usuarios inicializados en InicializadorUsuarios.java

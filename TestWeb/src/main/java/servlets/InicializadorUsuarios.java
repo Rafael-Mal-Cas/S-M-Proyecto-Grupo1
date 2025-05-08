@@ -12,7 +12,7 @@ public class InicializadorUsuarios implements ServletContextListener {
         // Crear una lista de usuarios en memoria
         List<String[]> usuarios = new ArrayList<>();
         
-        // Agregar algunos usuarios iniciales (puedes cambiar esto o agregar más)
+        // Agregar algunos  usuarios iniciales (puedes cambiar esto o agregar más)
         usuarios.add(new String[] {"ana", "NuBG4O"});
         usuarios.add(new String[] {"jose", "qGUpfT"});
         usuarios.add(new String[] {"maria", "$5szY9"});
