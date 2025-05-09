@@ -1,18 +1,26 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Formulario de Registro</title>
+    <title>Registro de usuario</title>
+    <link rel="stylesheet" type="text/css" href="Style/Style_index.css">
 </head>
 <body>
-    <h2>Registro de nuevo usuario</h2>
-    <form action="registroServer" method="post">
-        Usuario: <input type="text" name="usuario" required /><br/>
-        Contraseña: <input type="password" name="clave" required /><br/>
-        <input type="submit" value="Registrar" />
-    </form>
-
+    <main class="contenido">
+        <div class="card form-container">
+            <h1>Registro de nuevo usuario</h1>
+            <form action="registroServer" method="post">
+                <label for="usuario">Usuario:</label>
+                <input type="text" id="usuario" name="usuario" required /><br/>
+                <label for="clave">Contraseña:</label>
+                <input type="password" id="clave" name="clave" required /><br/>
+                <input type="submit" value="Registrarse">
+            </form>
+            <p style="margin-top: 15px;">
+                ¿Ya tienes cuenta? <a href="login.jsp">Inicia sesión</a>.
+            </p>
+        </div>
+    </main>
 </body>
 </html>

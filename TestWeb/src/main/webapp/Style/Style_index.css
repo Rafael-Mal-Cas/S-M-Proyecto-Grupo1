@@ -110,6 +110,88 @@ body {
     background-color: #0b7dda;
 }
 
+/* Formulario Login y Registro */
+.form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+    margin: 40px auto;
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    color: #333;
+    text-align: center;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #444;
+}
+
+.form-container input[type="text"],
+.form-container input[type="password"],
+.form-container input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.form-container input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.form-container input[type="submit"]:hover {
+    background-color: #0b7dda;
+}
+
+.form-container .link {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.form-container .link a {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+.form-container .link a:hover {
+    text-decoration: underline;
+}
+
+button,
+.form-container input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+button:hover,
+.form-container input[type="submit"]:hover {
+    background-color: #0b7dda;
+}
+
 /* Responsive */
 @media screen and (max-width: 768px) {
     .card {
