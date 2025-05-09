@@ -8,7 +8,7 @@ import java.util.*;
 import modelo.User;
 
 @WebServlet("/loginServer")
-public class LoginServer extends HttpServlet {
+public class loginServer extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -24,11 +24,11 @@ public class LoginServer extends HttpServlet {
         // Verificar credenciales
         User usuarioAutenticado = null;
         
-        if (usuarios != null) {
+        if (usuarios != null && username != null && password != null) {
             for (User usuario : usuarios) {
-                if (usuario.getUsuario().equals(username) {
+                if (usuario != null && username.equals(usuario.getUsuario())) {
                     // Encontrado el usuario, ahora verificar contraseña
-                    if (usuario.getContrasena().equals(password)) {
+                    if (password.equals(usuario.getContrasena())) {
                         usuarioAutenticado = usuario;
                     }
                     break; // Salir del bucle una vez encontrado el usuario
