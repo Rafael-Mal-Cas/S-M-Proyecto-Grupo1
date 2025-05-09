@@ -5,42 +5,118 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import modelo.User;
 
-@WebServlet("/registroServer") //s
+@WebServlet("/registroServer")
 public class RegistroUsuarioServlet extends HttpServlet {
+    private AtomicInteger idCounter;
+
+    @Override
+    public void init() throws ServletException {
+        idCounter = new AtomicInteger(0);
+        ServletContext context = getServletContext();
+        if (context.getAttribute("usuarios") == null) {
+            // Usamos CopyOnWriteArrayList para seguridad en entornos multi-hilo
+            context.setAttribute("usuarios", new CopyOnWriteArrayList<User>());
+        }
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
+        
+        try {
+            // Recoger y sanitizar parámetros
+            String nombre = sanitizeInput(request.getParameter("nombre"));
+            String apellidos = sanitizeInput(request.getParameter("apellidos"));
+            String genero = sanitizeInput(request.getParameter("genero"));
+            String email = sanitizeInput(request.getParameter("email")).toLowerCase();
+            String numeroTelefono = sanitizeInput(request.getParameter("numeroTelefono"));
+            String usuario = sanitizeInput(request.getParameter("usuario"));
+            String contrasena = request.getParameter("contrasena"); // No sanitizar contraseña
 
-        String username = request.getParameter("usuario");
-        String password = request.getParameter("clave");
-
-        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-            request.setAttribute("error", "Por favor, complete todos los campos.");
-            request.getRequestDispatcher("Registro.jsp").forward(request, response);
-            return;
-        }
-
-        // Obtener la lista de usuarios del contexto
-        ServletContext context = getServletContext();
-        List<String[]> usuarios = (List<String[]>) context.getAttribute("usuarios");
-
-        // Verificar si el usuario ya existe
-        for (String[] usuario : usuarios) {
-            if (usuario[0].equals(username)) {
-                request.setAttribute("error", "El nombre de usuario ya está registrado.");
-                request.getRequestDispatcher("Registro.jsp").forward(request, response);
+            // Validación de campos obligatorios
+            if (nombre == null || nombre.isEmpty() || 
+                usuario == null || usuario.isEmpty() || 
+                contrasena == null || contrasena.isEmpty() || 
+                email == null || email.isEmpty()) {
+                
+                setErrorAndRedirect(request, response, "Por favor, complete los campos obligatorios.");
                 return;
             }
+
+            // Validación de formato de email
+            if (!email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                setErrorAndRedirect(request, response, "Por favor, ingrese un email válido.");
+                return;
+            }
+
+            // Validación de fortaleza de contraseña
+            if (contrasena.length() < 8) {
+                setErrorAndRedirect(request, response, "La contraseña debe tener al menos 8 caracteres.");
+                return;
+            }
+
+            // Obtener la lista de usuarios de forma segura
+            ServletContext context = getServletContext();
+            List<User> usuarios = (List<User>) context.getAttribute("usuarios");
+
+            // Verificar unicidad de usuario y email
+            if (usuarioExiste(usuarios, usuario, email)) {
+                return;
+            }
+
+            // Crear y guardar nuevo usuario
+            User nuevoUsuario = crearUsuario(nombre, apellidos, genero, email, 
+                                          numeroTelefono, usuario, contrasena);
+            usuarios.add(nuevoUsuario);
+
+            // Éxito - redirigir al login
+            request.getSession().setAttribute("registroExitoso", 
+                "Registro completado con éxito. Ahora puedes iniciar sesión.");
+            response.sendRedirect("login.jsp");
+            
+        } catch (Exception e) {
+            // Loggear error
+            e.printStackTrace();
+            setErrorAndRedirect(request, response, "Ocurrió un error inesperado. Por favor, intente nuevamente.");
         }
+    }
 
-        // Registrar el nuevo usuario en la lista
-        usuarios.add(new String[]{username, password});
-        context.setAttribute("usuarios", usuarios);  // opcional, por seguridad
+    // Métodos auxiliares
+    private boolean usuarioExiste(List<User> usuarios, String usuario, String email) {
+        return usuarios.stream()
+                .anyMatch(u -> u.getUsuario().equalsIgnoreCase(usuario) || 
+                       u.getEmail().equalsIgnoreCase(email));
+    }
 
-        // Redirigir al login con mensaje
-        request.setAttribute("registroExitoso", "Usuario registrado correctamente. Ahora puedes iniciar sesión.");
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+    private User crearUsuario(String nombre, String apellidos, String genero, 
+                            String email, String numeroTelefono, 
+                            String usuario, String contrasena) {
+        return new User(
+            idCounter.incrementAndGet(),
+            nombre,
+            apellidos,
+            genero,
+            email,
+            numeroTelefono,
+            usuario,
+            contrasena // En producción, debería ser un hash de la contraseña
+        );
+    }
+
+    private void setErrorAndRedirect(HttpServletRequest request, 
+                                   HttpServletResponse response, 
+                                   String mensaje) 
+            throws ServletException, IOException {
+        request.setAttribute("error", mensaje);
+        request.getRequestDispatcher("Registro.jsp").forward(request, response);
+    }
+
+    private String sanitizeInput(String input) {
+        if (input == null) return null;
+        return input.trim().replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     }
 }

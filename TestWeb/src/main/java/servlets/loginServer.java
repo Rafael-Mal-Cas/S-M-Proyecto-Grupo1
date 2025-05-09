@@ -5,39 +5,47 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.*;
 import java.util.*;
+import modelo.User;
 
 @WebServlet("/loginServer")
-public class loginServer extends HttpServlet {
+public class LoginServer extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
         String username = request.getParameter("usuario");
         String password = request.getParameter("clave");
 
-        // Verificar el  usuario y la contraseña
-        boolean usuarioEncontrado = false;
+        // Obtener la lista de usuarios del contexto
+        ServletContext context = getServletContext();
+        List<User> usuarios = (List<User>) context.getAttribute("usuarios");
 
-        // Usar los usuarios inicializados en InicializadorUsuarios.java
-        List<String[]> usuarios = (List<String[]>) getServletContext().getAttribute("usuarios");
-
+        // Verificar credenciales
+        User usuarioAutenticado = null;
+        
         if (usuarios != null) {
-            for (String[] usuario : usuarios) {
-                // Verificar si el nombre de usuario y la contraseña coinciden
-                if (usuario[0].equals(username) && usuario[1].equals(password)) {
-                    usuarioEncontrado = true;
-                    break;
+            for (User usuario : usuarios) {
+                if (usuario.getUsuario().equals(username) {
+                    // Encontrado el usuario, ahora verificar contraseña
+                    if (usuario.getContrasena().equals(password)) {
+                        usuarioAutenticado = usuario;
+                    }
+                    break; // Salir del bucle una vez encontrado el usuario
                 }
             }
         }
 
-        if (usuarioEncontrado) {
-            // Usuario encontrado, iniciar sesión
-            request.getSession().setAttribute("username", username);
-            response.sendRedirect("index.jsp");  // Redirigir a la página principal
+        if (usuarioAutenticado != null) {
+            // Autenticación exitosa
+            HttpSession session = request.getSession();
+            session.setAttribute("usuario", usuarioAutenticado);
+            session.setAttribute("username", usuarioAutenticado.getUsuario());
+            
+            // Redirigir a página principal
+            response.sendRedirect("index.jsp");
         } else {
-            // Usuario no encontrado o contraseña incorrecta
+            // Autenticación fallida
             request.setAttribute("error", "Nombre de usuario o contraseña incorrectos.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
