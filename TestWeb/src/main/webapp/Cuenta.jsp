@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="modelo.User" %>
 <%@ page session="true" %>
 <%
-String usuario = (String) session.getAttribute("username");
-String password = (String) session.getAttribute("password"); // solo si se guardó en login
+User usuario = (User) session.getAttribute("usuario");
 if (usuario == null) {
     response.sendRedirect("login.jsp");
     return;
@@ -13,69 +13,92 @@ if (usuario == null) {
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Mi Cuenta</title>
+    <title>Mi Cuenta - <%= usuario.getNombre() %></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-	<link rel="stylesheet" type="text/css" href="Style/Style_index.css">
+    <link rel="stylesheet" type="text/css" href="Style/Style_index.css">
+    <link rel="stylesheet" type="text/css" href="Style/Style_registro.css">
 </head>
 <body>
-
     <header class="navbar">
         <div class="logo">MiSitio</div>
         <div class="user-menu">
             <i class="fas fa-user-circle user-icon" onclick="toggleDropdown()"></i>
             <div id="dropdown" class="dropdown-content">
-                <span class="username"><strong><%= usuario %></strong></span>
+                <span class="username"><strong><%= usuario.getUsuario() %></strong></span>
                 <a href="cuenta.jsp">Cuenta</a>
                 <a href="logout.jsp">Cerrar sesión</a>
             </div>
         </div>
     </header>
-
     <main class="contenido">
         <div class="card">
             <h1>Perfil de Usuario</h1>
-            <p><strong>Nombre de usuario:</strong> <%= usuario %></p>
+            
+            <div class="profile-section">
 
-          <p><strong>Contraseña:</strong> 
-                <span id="censurada">********</span>
-                <span id="real" style="display: none;"><%= password %></span>
-            </p> 
+                <div class="profile-info">
+                    <h2><%= usuario.getNombre() %> <%= usuario.getApellidos() %></h2>
+                    <p><i class="fas fa-user"></i> @<%= usuario.getUsuario() %></p>
+                    <p><i class="fas fa-envelope"></i> <%= usuario.getEmail() %></p>
+                    <p><i class="fas fa-phone"></i> <%= usuario.getNumeroTelefono() %></p>
+                </div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-label">ID de usuario:</div>
+                <div><%= usuario.getId() %></div>
+                
+                <div class="info-label">Género:</div>
+                <div><%= usuario.getGenero().equals("male") ? "Masculino" : usuario.getGenero().equals("female") ? "Femenino" : "Otro" %></div>
+                
+                <div class="info-label">Contraseña:</div>
+                <div>
+                    <span id="censurada">********</span>
+                    <span id="real" style="display: none;"><%= usuario.getContrasena() %></span>
+                    <span class="password-toggle" onclick="togglePassword()">Mostrar</span>
+                </div>
+            </div>
 
-           <!-- <button onclick="mostrarCampo()" id="btnMostrar">Mostrar contraseña</button> 
-
-            <div id="campoVerificacion" style="display: none; margin-top: 10px;">
-                <input type="password" id="inputVerif" placeholder="Introduce tu contraseña">
-                <button onclick="verificar()">Ver</button>
-                <p id="msg" style="color: red; font-size: 0.9em;"></p>
-            </div> -->
-
-            <a href="index.jsp">Volver al inicio</a>
+            <div style="margin-top: 2rem;">
+                <a href="editarCuenta.jsp" class="button">Editar perfil</a>
+                <a href="index.jsp" class="button secondary">Volver al inicio</a>
+            </div>
         </div>
     </main>
 
     <script>
-        const realPass = "<%= password %>";
-
-        function mostrarCampo() {
-            document.getElementById("campoVerificacion").style.display = "block";
-            document.getElementById("btnMostrar").style.display = "none";
+        function toggleDropdown() {
+            document.getElementById("dropdown").classList.toggle("show");
         }
 
-        function verificar() {
-            const input = document.getElementById("inputVerif").value;
-            const msg = document.getElementById("msg");
-
-            if (input === realPass) {
-                document.getElementById("censurada").style.display = "none";
-                document.getElementById("real").style.display = "inline";
-                msg.textContent = "";
-                document.getElementById("campoVerificacion").style.display = "none";
+        function togglePassword() {
+            const censurada = document.getElementById("censurada");
+            const real = document.getElementById("real");
+            const toggle = document.querySelector(".password-toggle");
+            
+            if (censurada.style.display === "none") {
+                censurada.style.display = "inline";
+                real.style.display = "none";
+                toggle.textContent = "Mostrar";
             } else {
-                msg.textContent = "Contraseña incorrecta.";
+                censurada.style.display = "none";
+                real.style.display = "inline";
+                toggle.textContent = "Ocultar";
+            }
+        }
+
+        // Cerrar el dropdown si se hace clic fuera de él
+        window.onclick = function(event) {
+            if (!event.target.matches('.user-icon')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
             }
         }
     </script>
-
 </body>
 </html>
-
