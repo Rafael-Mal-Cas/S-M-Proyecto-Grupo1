@@ -45,8 +45,8 @@ if (usuario == null) {
             </div>
             
             <div class="info-grid">
-                <div class="info-label">ID de usuario:</div>
-                <div><%= usuario.getId() %></div>
+               <!-- <div class="info-label">ID de usuario:</div>
+                <div><%= usuario.getId() %></div> --> 
                 
                 <div class="info-label">Género:</div>
                 <div><%= usuario.getGenero().equals("male") ? "Masculino" : usuario.getGenero().equals("female") ? "Femenino" : "Otro" %></div>
@@ -60,7 +60,7 @@ if (usuario == null) {
             </div>
 
             <div style="margin-top: 2rem;">
-                <a href="editarCuenta.jsp" class="button">Editar perfil</a>
+               <!-- <a href="editarCuenta.jsp" class="button">Editar perfil</a> --> 
                 <a href="index.jsp" class="button secondary">Volver al inicio</a>
             </div>
         </div>
