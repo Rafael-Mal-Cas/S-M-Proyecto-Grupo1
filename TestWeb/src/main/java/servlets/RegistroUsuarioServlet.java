@@ -1,122 +1,99 @@
 package servlets;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-import modelo.User;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.mindrot.jbcrypt.BCrypt;
+import utils.DatabaseConnection;
 
-@WebServlet("/registroServer")
+@WebServlet("/RegisterServlet")
 public class RegistroUsuarioServlet extends HttpServlet {
-    private AtomicInteger idCounter;
+    private static final long serialVersionUID = 1L;
 
-    @Override
-    public void init() throws ServletException {
-        idCounter = new AtomicInteger(0);
-        ServletContext context = getServletContext();
-        if (context.getAttribute("usuarios") == null) {
-            // Usamos CopyOnWriteArrayList para seguridad en entornos multi-hilo
-            context.setAttribute("usuarios", new CopyOnWriteArrayList<User>());
-        }
-    }
-
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        try {
-            // Recoger y sanitizar parámetros
-            String nombre = sanitizeInput(request.getParameter("nombre"));
-            String apellidos = sanitizeInput(request.getParameter("apellidos"));
-            String genero = sanitizeInput(request.getParameter("genero"));
-            String email = sanitizeInput(request.getParameter("email")).toLowerCase();
-            String numeroTelefono = sanitizeInput(request.getParameter("numeroTelefono"));
-            String usuario = sanitizeInput(request.getParameter("usuario"));
-            String contrasena = request.getParameter("contrasena"); // No sanitizar contraseña
 
-            // Validación de campos obligatorios
-            if (nombre == null || nombre.isEmpty() || 
-                usuario == null || usuario.isEmpty() || 
-                contrasena == null || contrasena.isEmpty() || 
-                email == null || email.isEmpty()) {
-                
-                setErrorAndRedirect(request, response, "Por favor, complete los campos obligatorios.");
+        // 1. Obtener parámetros del formulario
+        String nombre = request.getParameter("nombre");
+        String apellido = request.getParameter("apellido");
+        String genero = request.getParameter("genero");
+        String telefono = request.getParameter("telefono");
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmPassword");
+
+        // 2. Validaciones básicas
+        if (nombre == null || nombre.trim().isEmpty() ||
+            apellido == null || apellido.trim().isEmpty() ||
+            genero == null || genero.trim().isEmpty() ||
+            telefono == null || telefono.trim().isEmpty() ||
+            username == null || username.trim().isEmpty() ||
+            email == null || email.trim().isEmpty() ||
+            password == null || password.trim().isEmpty()) {
+
+            request.setAttribute("error", "Todos los campos son obligatorios.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            request.setAttribute("error", "Las contraseñas no coinciden.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            if (usuarioExiste(conn, username, email)) {
+                request.setAttribute("error", "El nombre de usuario o email ya está en uso.");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
                 return;
             }
 
-            // Validación de formato de email
-            if (!email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-                setErrorAndRedirect(request, response, "Por favor, ingrese un email válido.");
-                return;
+            if (registrarUsuario(conn, nombre, apellido, genero, telefono, username, email, hashedPassword)) {
+                response.sendRedirect("login.jsp");
+            } else {
+                request.setAttribute("error", "Error al registrar el usuario.");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
             }
-
-            // Validación de fortaleza de contraseña
-            if (contrasena.length() < 8) {
-                setErrorAndRedirect(request, response, "La contraseña debe tener al menos 8 caracteres.");
-                return;
-            }
-
-            // Obtener la lista de usuarios de forma segura
-            ServletContext context = getServletContext();
-            List<User> usuarios = (List<User>) context.getAttribute("usuarios");
-
-            // Verificar unicidad de usuario y email
-            if (usuarioExiste(usuarios, usuario, email)) {
-                return;
-            }
-
-            // Crear y guardar nuevo usuario
-            User nuevoUsuario = crearUsuario(nombre, apellidos, genero, email, 
-                                          numeroTelefono, usuario, contrasena);
-            usuarios.add(nuevoUsuario);
-
-            // Éxito - redirigir al login
-            request.getSession().setAttribute("registroExitoso", 
-                "Registro completado con éxito. Ahora puedes iniciar sesión.");
-            response.sendRedirect("login.jsp");
-            
-        } catch (Exception e) {
-            // Loggear error
+        } catch (SQLException e) {
             e.printStackTrace();
-            setErrorAndRedirect(request, response, "Ocurrió un error inesperado. Por favor, intente nuevamente.");
+            request.setAttribute("error", "Error de base de datos: " + e.getMessage());
+            request.getRequestDispatcher("register.jsp").forward(request, response);
         }
     }
 
-    // Métodos auxiliares
-    private boolean usuarioExiste(List<User> usuarios, String usuario, String email) {
-        return usuarios.stream()
-                .anyMatch(u -> u.getUsuario().equalsIgnoreCase(usuario) || 
-                       u.getEmail().equalsIgnoreCase(email));
+    private boolean usuarioExiste(Connection conn, String username, String email) throws SQLException {
+        String sql = "SELECT id FROM usuarios WHERE usuario = ? OR email = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            stmt.setString(2, email);
+            return stmt.executeQuery().next();
+        }
     }
 
-    private User crearUsuario(String nombre, String apellidos, String genero, 
-                            String email, String numeroTelefono, 
-                            String usuario, String contrasena) {
-        return new User(
-            idCounter.incrementAndGet(),
-            nombre,
-            apellidos,
-            genero,
-            email,
-            numeroTelefono,
-            usuario,
-            contrasena // En producción, debería ser un hash de la contraseña
-        );
-    }
-
-    private void setErrorAndRedirect(HttpServletRequest request, 
-                                   HttpServletResponse response, 
-                                   String mensaje) 
-            throws ServletException, IOException {
-        request.setAttribute("error", mensaje);
-        request.getRequestDispatcher("Registro.jsp").forward(request, response);
-    }
-
-    private String sanitizeInput(String input) {
-        if (input == null) return null;
-        return input.trim().replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    private boolean registrarUsuario(Connection conn, String nombre, String apellido, String genero,
+                                     String telefono, String username, String email, String hashedPassword) 
+            throws SQLException {
+        String sql = "INSERT INTO usuarios (nombre, apellido, genero, telefono, usuario, email, contrasena, fecha_registro) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, nombre);
+            stmt.setString(2, apellido);
+            stmt.setString(3, genero);
+            stmt.setString(4, telefono);
+            stmt.setString(5, username);
+            stmt.setString(6, email);
+            stmt.setString(7, hashedPassword);
+            return stmt.executeUpdate() > 0;
+        }
     }
 }

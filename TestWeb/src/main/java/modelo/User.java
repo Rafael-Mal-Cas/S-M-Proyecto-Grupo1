@@ -106,4 +106,9 @@ public class User {
                 ", contrasena='" + contrasena + '\'' +
                 '}';
     }
+
+	public void setImagen(String string) {
+		// TODO Auto-generated method stub
+		
+	}
 }

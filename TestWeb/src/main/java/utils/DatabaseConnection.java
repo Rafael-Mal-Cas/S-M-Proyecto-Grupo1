@@ -5,19 +5,21 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    // Configuración para BD externa
-    private static final String URL = "jdbc:mysql://[IP_O_HOST_EXTERNO]:3306/[NOMBRE_BD]";
-    private static final String USER = "[USUARIO_EXTERNO]";
-    private static final String PASS = "[CONTRASEÑA_EXTERNA]";
+    // URL real del servidor MySQL con puerto y base de datos
+    private static final String URL = "jdbc:mysql://mysql-b6091e0-sm-a9ae.i.aivencloud.com:27803/defaultdb";
+    private static final String USER = "avnadmin";
+    private static final String PASS = "AVNS_uEUTJpymChrFyq_8npz";
     
-    // Parámetros adicionales recomendados para conexión externa
+    // Parámetros para usar conexión segura con SSL
     private static final String CONNECTION_PARAMS = 
         "?useSSL=true" +
+        "&requireSSL=true" +
+        "&verifyServerCertificate=true" +
         "&allowPublicKeyRetrieval=true" +
         "&autoReconnect=true" +
         "&connectTimeout=5000" +
         "&socketTimeout=30000";
-    
+
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -25,7 +27,7 @@ public class DatabaseConnection {
             throw new RuntimeException("Error al cargar el driver JDBC", e);
         }
     }
-    
+
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL + CONNECTION_PARAMS, USER, PASS);
     }
