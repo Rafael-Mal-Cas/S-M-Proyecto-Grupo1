@@ -22,7 +22,11 @@ public class User {
         this.contrasena = contrasena;
     }
 
-    // Getters
+    public User() {
+		// TODO Auto-generated constructor stub
+	}
+
+	// Getters
     public int getId() {
         return id;
     }

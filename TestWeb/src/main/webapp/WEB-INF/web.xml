@@ -31,6 +31,14 @@
 		<welcome-file>login.jsp</welcome-file>
 	</welcome-file-list>
 	
+	<!-- Data Base conectión -->
+	<resource-ref>
+    	<description>DB Connection</description>
+    	<res-ref-name>jdbc/miBaseDatos</res-ref-name>
+    	<res-type>javax.sql.DataSource</res-type>
+    	<res-auth>Container</res-auth>
+	</resource-ref>
+		
 	 <listener>
         <listener-class>servlets.InicializadorUsuarios</listener-class>
     </listener>

@@ -1,11 +1,20 @@
 package servlets;
 
-import javax.servlet.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
-import java.io.*;
-import java.util.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import modelo.User;
+import utils.DatabaseConnection;
 
 @WebServlet("/loginServer")
 public class loginServer extends HttpServlet {
@@ -17,22 +26,45 @@ public class loginServer extends HttpServlet {
         String username = request.getParameter("usuario");
         String password = request.getParameter("clave");
 
-        // Obtener la lista de usuarios del contexto
-        ServletContext context = getServletContext();
-        List<User> usuarios = (List<User>) context.getAttribute("usuarios");
-
-        // Verificar credenciales
         User usuarioAutenticado = null;
-        
-        if (usuarios != null && username != null && password != null) {
-            for (User usuario : usuarios) {
-                if (usuario != null && username.equals(usuario.getUsuario())) {
-                    // Encontrado el usuario, ahora verificar contraseña
-                    if (password.equals(usuario.getContrasena())) {
-                        usuarioAutenticado = usuario;
-                    }
-                    break; // Salir del bucle una vez encontrado el usuario
-                }
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            // 1. Obtener conexión a la base de datos
+            conn = DatabaseConnection.getConnection();
+            
+            // 2. Preparar consulta SQL para buscar el usuario
+            String sql = "SELECT * FROM usuarios WHERE usuario = ? AND contrasena = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            
+            // 3. Ejecutar consulta
+            rs = stmt.executeQuery();
+            
+            // 4. Si hay resultados, el usuario existe y las credenciales son correctas
+            if (rs.next()) {
+                usuarioAutenticado = new User();
+                usuarioAutenticado.setUsuario(rs.getString("usuario"));
+                usuarioAutenticado.setContrasena(rs.getString("contrasena"));
+                // Agrega aquí otros campos que necesites del usuario
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error de conexión con la base de datos.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        } finally {
+            // 5. Cerrar recursos
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 
