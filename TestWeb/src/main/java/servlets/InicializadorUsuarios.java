@@ -1,52 +1,69 @@
 package servlets;
 
-import javax.servlet.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.util.*;
+
 import modelo.User;
 
+@SuppressWarnings("unused")
 @WebListener
 public class InicializadorUsuarios implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        // Crear una lista de usuarios en memoria usando la clase User
+        // Solo necesitamos cargar los usuarios existentes desde la BD
+        cargarUsuariosDesdeBD(sce);
+    }
+
+    private void cargarUsuariosDesdeBD(ServletContextEvent sce) {
         List<User> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios"; // Ajusta según tu esquema de BD
         
-        // Agregar usuarios iniciales con todos los campos
-        usuarios.add(new User(1, "Emily", "Johnson", "female", 
-                            "emily.johnson@x.dummyjson.com", "+81 965-431-3024", 
-                            "emilys", "emilyspass"));
-        
-        usuarios.add(new User(2, "Michael", "Williams", "male", 
-                            "michael.williams@x.dummyjson.com", "+49 258-627-6644", 
-                            "michaelw", "michaelwpass"));
-        
-        usuarios.add(new User(3, "Sophia", "Brown", "female", 
-                            "sophia.brown@x.dummyjson.com", "+81 210-652-2785", 
-                            "sophiab", "sophiabpass"));
-        
-        usuarios.add(new User(4, "James", "Davis", "male", 
-                            "james.davis@x.dummyjson.com", "+49 614-958-9364", 
-                            "jamesd", "jamesdpass"));
-        
-        usuarios.add(new User(5, "Emma", "Miller", "female", 
-                            "emma.miller@x.dummyjson.com", "+91 759-776-1614", 
-                            "emmaj", "emmajpass"));
-        
-        // Puedes agregar más usuarios aquí según sea necesario
-        // ...
-        
-        // Almacenar los usuarios en el contexto de la aplicación
-        sce.getServletContext().setAttribute("usuarios", usuarios);
-        
-        // También almacenamos un contador de IDs para nuevos registros
-        sce.getServletContext().setAttribute("idCounter", usuarios.size());
+        try (Connection conn = utils.DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                User user = new User(
+                    rs.getInt("id"),
+                    rs.getString("nombre"),       // Ajusta nombres de columnas
+                    rs.getString("apellido"),    // según tu esquema de BD
+                    rs.getString("genero"),
+                    rs.getString("email"),
+                    rs.getString("telefono"),
+                    rs.getString("username"),
+                    rs.getString("password")
+                );
+                usuarios.add(user);
+            }
+            
+            // Almacenar en el contexto de la aplicación
+            sce.getServletContext().setAttribute("usuarios", usuarios);
+            
+            // Configurar contador de IDs (usando el máximo ID existente + 1)
+            int maxId = usuarios.stream()
+                              .mapToInt(User::getId)
+                              .max()
+                              .orElse(0);
+            sce.getServletContext().setAttribute("idCounter", maxId + 1);
+            
+        } catch (SQLException e) {
+            // Manejo mejorado de errores
+            throw new RuntimeException("Error al cargar usuarios desde BD externa", e);
+        }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        // Limpiar recursos si es necesario
+        // Limpiar recursos
         sce.getServletContext().removeAttribute("usuarios");
         sce.getServletContext().removeAttribute("idCounter");
     }
