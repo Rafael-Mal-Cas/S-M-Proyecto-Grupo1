@@ -6,7 +6,7 @@
               maxIdle="30"
               maxWaitMillis="10000"
               username="avnadmin"
-              password="AVNS_uEUTJpymChrFyq_8npz"              
+              password=""              
               driverClassName="com.mysql.cj.jdbc.Driver"
               url="jdbc:mysql://mysql-b6091e0-sm-a9ae.i.aivencloud.com:27803/nombre_bd?useSSL=true&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC"
               validationQuery="SELECT 1"
