@@ -16,12 +16,12 @@
 
 	<!-- Configuración del Servlet de Login -->
 	<servlet>
-		<servlet-name>LoginServer</servlet-name>
-		<servlet-class>servlets.LoginServer</servlet-class>
+		<servlet-name>loginServer</servlet-name>
+		<servlet-class>servlets.loginServer</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>LoginServer</servlet-name>
-		<url-pattern>/LoginServer</url-pattern>
+		<servlet-name>loginServer</servlet-name>
+		<url-pattern>/loginServer</url-pattern>
 	</servlet-mapping>
 
 
