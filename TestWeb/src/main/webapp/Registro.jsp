@@ -63,15 +63,13 @@
                 <div class="form-group">
                     <label for="usuario" class="required">Nombre de usuario:</label>
                     <input type="text" id="usuario" name="usuario" required 
-                           minlength="4" maxlength="20"
                            pattern="[a-zA-Z0-9]+" 
                            title="Solo letras y números, sin espacios">
                 </div>
                 
                 <div class="form-group">
                     <label for="contrasena" class="required">Contraseña:</label>
-                    <input type="password" id="contrasena" name="contrasena" required 
-                           minlength="8"
+                    <input type="password" id="contrasena" name="contrasena" required
                            title="Mínimo 8 caracteres">
                 </div>
                 
