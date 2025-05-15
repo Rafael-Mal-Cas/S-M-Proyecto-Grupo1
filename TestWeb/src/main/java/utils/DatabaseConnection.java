@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
     // URL real del servidor MySQL con puerto y base de datos
-    private static final String URL = "jdbc:mysql://mysql-b6091e0-sm-a9ae.i.aivencloud.com:27803/defaultdb";
+    private static final String URL = "jdbc:mysql://mysql-b6091e0-sm-a9ae.i.aivencloud.com:27803/defaultdb?useSSL=true&requireSSL=true&verifyServerCertificate=true&allowPublicKeyRetrieval=true&serverTimezone=UTC";
     private static final String USER = "avnadmin";
     private static final String PASS = "AVNS_uEUTJpymChrFyq_8npz"; 
     
