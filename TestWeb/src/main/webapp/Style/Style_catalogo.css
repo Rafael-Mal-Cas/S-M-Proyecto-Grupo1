@@ -1,0 +1,124 @@
+@charset "UTF-8";
+/* catalogo.css - Extensión del Style_index.css para el catálogo */
+
+/* Mantenemos los estilos base */
+@import url('Style_index.css');
+
+/* Estilos específicos para el catálogo */
+.catalogo-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.catalogo-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.catalogo-header h1 {
+    font-size: 2.2em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.catalogo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 20px;
+}
+
+.coche-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.coche-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.coche-imagen {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.coche-info {
+    padding: 15px;
+}
+
+.coche-info h2 {
+    font-size: 1.3em;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.coche-info p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.coche-precio {
+    font-weight: bold;
+    color: #2196F3;
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.filtros-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filtros-container select, 
+.filtros-container input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.filtros-container button {
+    padding: 8px 15px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.filtros-container button:hover {
+    background-color: #0b7dda;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .catalogo-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .catalogo-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filtros-container {
+        flex-direction: column;
+    }
+}

@@ -21,53 +21,55 @@ public class RegistroUsuarioServlet extends HttpServlet {
 
         // 1. Obtener parámetros del formulario
         String nombre = request.getParameter("nombre");
-        String apellido = request.getParameter("apellido");
+        String apellidos = request.getParameter("apellidos");
         String genero = request.getParameter("genero");
-        String telefono = request.getParameter("telefono");
-        String username = request.getParameter("username");
+        String numeroTelefono = request.getParameter("numeroTelefono");
+        String username = request.getParameter("usuario");
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String confirmPassword = request.getParameter("confirmPassword");
+        String password = request.getParameter("contrasena");
+        String confirmPassword = request.getParameter("confirmar_contrasena");
 
         // 2. Validaciones básicas
         if (nombre == null || nombre.trim().isEmpty() ||
-            apellido == null || apellido.trim().isEmpty() ||
+            apellidos == null || apellidos.trim().isEmpty() ||
             genero == null || genero.trim().isEmpty() ||
-            telefono == null || telefono.trim().isEmpty() ||
+            numeroTelefono == null || numeroTelefono.trim().isEmpty() ||
             username == null || username.trim().isEmpty() ||
             email == null || email.trim().isEmpty() ||
             password == null || password.trim().isEmpty()) {
 
             request.setAttribute("error", "Todos los campos son obligatorios.");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("Registro.jsp").forward(request, response);
             return;
         }
 
         if (!password.equals(confirmPassword)) {
             request.setAttribute("error", "Las contraseñas no coinciden.");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("Registro.jsp").forward(request, response);
             return;
         }
 
+        // Encriptar contraseña
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             if (usuarioExiste(conn, username, email)) {
                 request.setAttribute("error", "El nombre de usuario o email ya está en uso.");
-                request.getRequestDispatcher("register.jsp").forward(request, response);
+                request.getRequestDispatcher("Registro.jsp").forward(request, response);
                 return;
             }
 
-            if (registrarUsuario(conn, nombre, apellido, genero, telefono, username, email, hashedPassword)) {
-                response.sendRedirect("login.jsp");
+            if (registrarUsuario(conn, nombre, apellidos, genero, numeroTelefono, username, email, hashedPassword)) {
+                request.getSession().setAttribute("registroExitoso", "Usuario registrado correctamente.");
+                response.sendRedirect("Registro.jsp");
             } else {
                 request.setAttribute("error", "Error al registrar el usuario.");
-                request.getRequestDispatcher("register.jsp").forward(request, response);
+                request.getRequestDispatcher("Registro.jsp").forward(request, response);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("error", "Error de base de datos: " + e.getMessage());
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("Registro.jsp").forward(request, response);
         }
     }
 
@@ -80,16 +82,16 @@ public class RegistroUsuarioServlet extends HttpServlet {
         }
     }
 
-    private boolean registrarUsuario(Connection conn, String nombre, String apellido, String genero,
-                                     String telefono, String username, String email, String hashedPassword) 
+    private boolean registrarUsuario(Connection conn, String nombre, String apellidos, String genero,
+                                     String numeroTelefono, String username, String email, String hashedPassword)
             throws SQLException {
-        String sql = "INSERT INTO usuarios_simplificados (nombre, apellido, genero, telefono, usuario, email, contrasena, fecha_registro) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        String sql = "INSERT INTO usuarios_simplificados (nombre, apellidos, genero, numeroTelefono, usuario, email, contrasena) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nombre);
-            stmt.setString(2, apellido);
+            stmt.setString(2, apellidos);
             stmt.setString(3, genero);
-            stmt.setString(4, telefono);
+            stmt.setString(4, numeroTelefono);
             stmt.setString(5, username);
             stmt.setString(6, email);
             stmt.setString(7, hashedPassword);

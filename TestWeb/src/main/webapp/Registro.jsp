@@ -30,41 +30,46 @@
             <form action="registroUsuario" method="post" onsubmit="return validarFormulario()">
                 <div class="form-group">
                     <label for="nombre" class="required">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" required>
+                    <input type="text" id="nombre" name="nombre" required
+                           value="<%= request.getParameter("nombre") != null ? request.getParameter("nombre") : "" %>">
                 </div>
                 
                 <div class="form-group">
-                    <label for="apellidos">Apellidos:</label>
-                    <input type="text" id="apellidos" name="apellidos">
+                    <label for="apellidos" class="required">Apellidos:</label>
+                    <input type="text" id="apellidos" name="apellidos" required
+                           value="<%= request.getParameter("apellidos") != null ? request.getParameter("apellidos") : "" %>">
                 </div>
                 
                 <div class="form-group">
-                    <label for="genero">Género:</label>
-                    <select id="genero" name="genero">
+                    <label for="genero" class="required">Género:</label>
+                    <select id="genero" name="genero" required>
                         <option value="">Seleccione...</option>
-                        <option value="male">Masculino</option>
-                        <option value="female">Femenino</option>
-                        <option value="other">Otro</option>
+                        <option value="male" <%= "male".equals(request.getParameter("genero")) ? "selected" : "" %>>Masculino</option>
+                        <option value="female" <%= "female".equals(request.getParameter("genero")) ? "selected" : "" %>>Femenino</option>
+                        <option value="other" <%= "other".equals(request.getParameter("genero")) ? "selected" : "" %>>Otro</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="email" class="required">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" required
+                           value="<%= request.getParameter("email") != null ? request.getParameter("email") : "" %>">
                 </div>
                 
                 <div class="form-group">
-                    <label for="numeroTelefono">Teléfono:</label>
-                    <input type="tel" id="numeroTelefono" name="numeroTelefono" 
-                           pattern="[+]{0,1}[0-9\s-]{6,}" 
-                           title="Formato: +[código país] [número] (ej. +34 912345678)">
+                    <label for="numeroTelefono" class="required">Teléfono:</label>
+                    <input type="tel" id="numeroTelefono" name="numeroTelefono" required
+                           pattern="[+]{0,1}[0-9\\s-]{6,}" 
+                           title="Formato: +[código país] [número] (ej. +34 912345678)"
+                           value="<%= request.getParameter("numeroTelefono") != null ? request.getParameter("numeroTelefono") : "" %>">
                 </div>
                 
                 <div class="form-group">
                     <label for="usuario" class="required">Nombre de usuario:</label>
                     <input type="text" id="usuario" name="usuario" required 
-                           pattern="[a-zA-Z0-9]+" 
-                           title="Solo letras y números, sin espacios">
+                           pattern="[a-zA-Z0-9]+"
+                           title="Solo letras y números, sin espacios"
+                           value="<%= request.getParameter("usuario") != null ? request.getParameter("usuario") : "" %>">
                 </div>
                 
                 <div class="form-group">
@@ -82,7 +87,7 @@
                     <button type="submit">Registrarse</button>
                 </div>
             </form>
-            
+
             <p style="margin-top: 15px; text-align: center;">
                 ¿Ya tienes cuenta? <a href="login.jsp">Inicia sesión</a>.
             </p>
