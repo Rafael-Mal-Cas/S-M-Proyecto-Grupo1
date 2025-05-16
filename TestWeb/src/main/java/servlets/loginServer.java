@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import modelo.User;
+import org.mindrot.jbcrypt.BCrypt;
 import utils.DatabaseConnection;
 
 @WebServlet("/loginServer")
@@ -29,29 +30,42 @@ public class loginServer extends HttpServlet {
         String password = request.getParameter("clave");
 
         User usuarioAutenticado = null;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
 
-        try {
-            conn = DatabaseConnection.getConnection();
-            String sql = "SELECT * FROM usuarios_simplificados WHERE usuario = ? AND contrasena = ?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-            rs = stmt.executeQuery();
+        try (Connection conn = DatabaseConnection.getConnection()) {
 
-            if (rs.next()) {
-                usuarioAutenticado = new User();
-                usuarioAutenticado.setId(rs.getInt("id"));
-                usuarioAutenticado.setNombre(rs.getString("nombre"));
-                usuarioAutenticado.setApellidos(rs.getString("apellidos"));
-                usuarioAutenticado.setGenero(rs.getString("genero"));
-                usuarioAutenticado.setEmail(rs.getString("email"));
-                usuarioAutenticado.setNumeroTelefono(rs.getString("numeroTelefono"));
-                usuarioAutenticado.setUsuario(rs.getString("usuario"));
-                usuarioAutenticado.setContrasena(rs.getString("contrasena"));
-                usuarioAutenticado.setImagen(rs.getString("imagen")); // si lo usas en el futuro
+            String sql = "SELECT * FROM usuarios_simplificados WHERE usuario = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        String hashedPasswordFromDb = rs.getString("contrasena");
+
+                        boolean passwordMatch = false;
+
+                        // Detectar si el hash parece bcrypt (empieza por $2a$, $2b$, $2y$)
+                        if (hashedPasswordFromDb != null && hashedPasswordFromDb.startsWith("$2a$") ||
+                            hashedPasswordFromDb.startsWith("$2b$") || hashedPasswordFromDb.startsWith("$2y$")) {
+                            // Usar BCrypt para validar
+                            passwordMatch = BCrypt.checkpw(password, hashedPasswordFromDb);
+                        } else {
+                            // Contraseña sin encriptar (texto plano) - comparar directamente
+                            passwordMatch = password.equals(hashedPasswordFromDb);
+                        }
+
+                        if (passwordMatch) {
+                            usuarioAutenticado = new User();
+                            usuarioAutenticado.setId(rs.getInt("id"));
+                            usuarioAutenticado.setNombre(rs.getString("nombre"));
+                            usuarioAutenticado.setApellidos(rs.getString("apellidos"));
+                            usuarioAutenticado.setGenero(rs.getString("genero"));
+                            usuarioAutenticado.setEmail(rs.getString("email"));
+                            usuarioAutenticado.setNumeroTelefono(rs.getString("numeroTelefono"));
+                            usuarioAutenticado.setUsuario(rs.getString("usuario"));
+                            usuarioAutenticado.setContrasena(hashedPasswordFromDb);
+                            usuarioAutenticado.setImagen(rs.getString("imagen")); // si lo usas en el futuro
+                        }
+                    }
+                }
             }
 
         } catch (SQLException e) {
@@ -59,14 +73,6 @@ public class loginServer extends HttpServlet {
             request.setAttribute("error", "Error de conexión con la base de datos.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
 
         if (usuarioAutenticado != null) {

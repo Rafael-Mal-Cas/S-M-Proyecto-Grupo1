@@ -6,6 +6,7 @@
     <title>Registro de usuario</title>
     <link rel="stylesheet" type="text/css" href="Style/Style_index.css">
     <link rel="stylesheet" type="text/css" href="Style/Style_registro.css">
+    <link rel="icon" type="image/png" href="Style/logo.png" />
 </head>
 <body>
     <main class="contenido">

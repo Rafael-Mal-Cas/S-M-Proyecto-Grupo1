@@ -9,15 +9,25 @@
 <title>Formulario y Login</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" type="text/css" href="Style/Style_index.css">
+<link rel="icon" type="image/png" href="Style/logo.png" />
 </head>
 <body>
     <header class="navbar">
-        <div class="logo">MiSitio</div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="logo">Venta de coches</div>
+            <% 
+            String usuario = (String) session.getAttribute("username");
+            if (usuario != null) {
+            %>
+                <a href="catalogo.jsp" style="color: white; text-decoration: none; font-weight: bold;">Catálogo BMW</a>
+            <%
+            }
+            %>
+        </div>
         <div class="user-menu">
             <i class="fas fa-user-circle user-icon" onclick="toggleDropdown()"></i>
             <div id="dropdown" class="dropdown-content">
                 <%
-                String usuario = (String) session.getAttribute("username");
                 if (usuario != null) {
                 %>
                     <span class="username"><strong><%= usuario %></strong></span>
@@ -67,6 +77,5 @@
             }
         }
     </script>
-
 </body>
 </html>

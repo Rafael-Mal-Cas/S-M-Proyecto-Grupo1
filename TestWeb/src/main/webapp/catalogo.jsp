@@ -1,36 +1,56 @@
-<%@ page import="java.io.BufferedReader, java.io.FileReader, java.util.ArrayList, java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="modelo.catalogo" %>
+<%@ page import="modelo.coche" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Coches BMW</title>
-    <link rel="stylesheet" href="Style_index.css">
-    <link rel="stylesheet" href="catalogo.css">
+    <meta charset="UTF-8" />
+    <title>Catálogo de Coches </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="Style/Style_index.css" />
+    <link rel="stylesheet" href="Style/Style_catalogo.css" />
+    <link rel="icon" type="image/png" href="Style/logo.png" />
+
 </head>
 <body>
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">BMW Catalogo</div>
-        <div class="user-menu">
-            <div class="user-icon">👤</div>
-            <div class="dropdown-content" id="dropdownMenu">
-                <span class="username">Usuario</span>
-                <a href="#">Mi perfil</a>
-                <a href="#">Cerrar sesión</a>
-            </div>
+
+<header class="navbar">
+    <div style="display: flex; align-items: center; gap: 20px;">
+        <div class="logo">Venta de coches</div>
+        <% 
+            String usuario = (String) session.getAttribute("username");
+            if (usuario != null) {
+        %>
+            <a href="catalogo.jsp" style="color: white; text-decoration: none; font-weight: bold;">Catálogo</a>
+        <%
+            }
+        %>
+    </div>
+    <div class="user-menu">
+        <% 
+            if (usuario == null) {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+        %>
+        <i class="fas fa-user-circle user-icon" onclick="toggleDropdown()"></i>
+        <div id="dropdown" class="dropdown-content">
+            <span class="username"><strong><%= usuario %></strong></span>
+            <a href="Cuenta.jsp">Cuenta</a>
+            <a href="logout.jsp">Cerrar sesión</a>
         </div>
     </div>
+</header>
 
+
+<main>
     <div class="catalogo-container">
-        <div class="catalogo-header">
-            <h1>Catálogo de Coches BMW</h1>
-            <p>Descubre nuestra exclusiva gama de vehículos</p>
-        </div>
-
-        <!-- Filtros -->
+        <!-- FILTROS A LA IZQUIERDA -->
         <div class="filtros-container">
+            <h3>Filtros</h3>
+
+            <label for="filtro-modelo">Modelo</label>
             <select id="filtro-modelo">
                 <option value="">Todos los modelos</option>
                 <option value="Serie 3">Serie 3</option>
@@ -55,6 +75,7 @@
                 <option value="i4">i4</option>
             </select>
 
+            <label for="filtro-combustible">Combustible</label>
             <select id="filtro-combustible">
                 <option value="">Todos los combustibles</option>
                 <option value="Gasolina">Gasolina</option>
@@ -63,135 +84,100 @@
                 <option value="Eléctrico">Eléctrico</option>
             </select>
 
-            <input type="number" id="filtro-precio-min" placeholder="Precio mínimo" min="0">
-            <input type="number" id="filtro-precio-max" placeholder="Precio máximo" min="0">
+            <label for="filtro-precio-min">Precio mínimo (€)</label>
+            <input type="number" id="filtro-precio-min" min="0" placeholder="Min">
 
-            <button onclick="filtrarCatalogo()">Filtrar</button>
-            <button onclick="resetFiltros()">Resetear</button>
+            <label for="filtro-precio-max">Precio máximo (€)</label>
+            <input type="number" id="filtro-precio-max" min="0" placeholder="Max">
+
+            <button type="button" onclick="filtrarCatalogo()">Filtrar</button>
+            <button type="button" onclick="resetFiltros()">Resetear</button>
         </div>
 
-        <!-- Grid de coches -->
+        <!-- CATÁLOGO DE COCHES AL CENTRO -->
         <div class="catalogo-grid">
             <%
-                // Ruta al archivo CSV (ajusta según tu estructura de proyecto)
-                String csvFile = getServletContext().getRealPath("/bmw_cars.csv");
-                BufferedReader br = null;
-                String line = "";
-                String cvsSplitBy = ",";
-                boolean firstLine = true;
-                
-                try {
-                    br = new BufferedReader(new FileReader(csvFile));
-                    while ((line = br.readLine()) != null) {
-                        // Saltar la primera línea (cabeceras)
-                        if (firstLine) {
-                            firstLine = false;
-                            continue;
-                        }
-                        
-                        String[] coche = line.split(cvsSplitBy);
-                        
-                        // Comprobar que tenemos todos los campos necesarios
-                        if (coche.length >= 10) {
-                            String id = coche[0];
-                            String brand = coche[1];
-                            String model = coche[2];
-                            String year = coche[3];
-                            String color = coche[4];
-                            String price = coche[5];
-                            String engine = coche[6];
-                            String fuel = coche[7];
-                            String image = coche[8];
-                            
-                            // Limpiar la URL de la imagen si es necesario
-                            image = image.replace("\"", "");
+                catalogo catalogoBMW = new catalogo();
+                String ruta = application.getRealPath("/WEB-INF/BMW_catalogo.csv");
+                catalogoBMW.cargarDesdeCSV(ruta);
+
+                ArrayList<coche> coches = catalogoBMW.getCoches(); // todos los coches sin filtro server side
+
+                for (coche c : coches) {
             %>
-            <div class="coche-card" data-modelo="<%= model %>" data-combustible="<%= fuel %>" data-precio="<%= price %>">
-                <img src="<%= image %>" alt="<%= brand %> <%= model %>" class="coche-imagen" onerror="this.src='https://via.placeholder.com/300x180?text=Imagen+no+disponible'">
+            <div class="coche-card" data-modelo="<%= c.getModelo().toLowerCase() %>" data-combustible="<%= c.getCombustible().toLowerCase() %>" data-precio="<%= c.getPrecio() %>">
+                <img src="<%= c.getImagen() %>" alt="<%= c.getMarca() + " " + c.getModelo() %>" class="coche-imagen" onerror="this.src='https://via.placeholder.com/300x180?text=Imagen+no+disponible'">
                 <div class="coche-info">
-                    <h2><%= brand %> <%= model %></h2>
-                    <p>Año: <%= year %></p>
-                    <p>Color: <%= color %></p>
-                    <p>Motor: <%= engine %></p>
-                    <p>Combustible: <%= fuel %></p>
-                    <div class="coche-precio"><%= price %> €</div>
+                    <h2><%= c.getMarca() %> <%= c.getModelo() %></h2>
+                    <p>Año: <%= c.getAnio() %></p>
+                    <p>Color: <%= c.getColor() %></p>
+                    <p>Motor: <%= c.getMotor() %></p>
+                    <p>Combustible: <%= c.getCombustible() %></p>
+                    <div class="coche-precio"><%= c.getPrecio() %> €</div>
                 </div>
             </div>
             <%
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (br != null) {
-                        try {
-                            br.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
                 }
             %>
         </div>
     </div>
+</main>
 
-    <script>
-        // Mostrar/ocultar menú desplegable
-        document.querySelector('.user-icon').addEventListener('click', function() {
-            document.getElementById('dropdownMenu').classList.toggle('show');
-        });
+ <script>
+    function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("show");
+    }
 
-        // Cerrar el menú desplegable si se hace clic fuera de él
-        window.onclick = function(event) {
-            if (!event.target.matches('.user-icon')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
+    window.onclick = function(event) {
+        if (!event.target.matches('.user-icon')) {
+            const dropdown = document.getElementById("dropdown");
+            if (dropdown && dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
             }
         }
+    }
+</script>
 
-        // Función para filtrar el catálogo
-        function filtrarCatalogo() {
-            const modelo = document.getElementById('filtro-modelo').value.toLowerCase();
-            const combustible = document.getElementById('filtro-combustible').value.toLowerCase();
-            const precioMin = parseFloat(document.getElementById('filtro-precio-min').value) || 0;
-            const precioMax = parseFloat(document.getElementById('filtro-precio-max').value) || Infinity;
-            
-            const coches = document.querySelectorAll('.coche-card');
-            
-            coches.forEach(coche => {
-                const cocheModelo = coche.getAttribute('data-modelo').toLowerCase();
-                const cocheCombustible = coche.getAttribute('data-combustible').toLowerCase();
-                const cochePrecio = parseFloat(coche.getAttribute('data-precio'));
-                
-                const coincideModelo = modelo === '' || cocheModelo.includes(modelo);
-                const coincideCombustible = combustible === '' || cocheCombustible.includes(combustible);
-                const coincidePrecio = cochePrecio >= precioMin && cochePrecio <= precioMax;
-                
-                if (coincideModelo && coincideCombustible && coincidePrecio) {
-                    coche.style.display = 'block';
-                } else {
-                    coche.style.display = 'none';
-                }
-            });
-        }
-        
-        // Función para resetear los filtros
-        function resetFiltros() {
-            document.getElementById('filtro-modelo').value = '';
-            document.getElementById('filtro-combustible').value = '';
-            document.getElementById('filtro-precio-min').value = '';
-            document.getElementById('filtro-precio-max').value = '';
-            
-            const coches = document.querySelectorAll('.coche-card');
-            coches.forEach(coche => {
-                coche.style.display = 'block';
-            });
-        }
-    </script>
+
+<script>
+    function filtrarCatalogo() {
+        const modelo = document.getElementById('filtro-modelo').value.toLowerCase();
+        const combustible = document.getElementById('filtro-combustible').value.toLowerCase();
+        const precioMin = parseFloat(document.getElementById('filtro-precio-min').value) || 0;
+        const precioMaxInput = document.getElementById('filtro-precio-max').value;
+        const precioMax = precioMaxInput === "" ? Infinity : parseFloat(precioMaxInput);
+
+        const coches = document.querySelectorAll('.coche-card');
+
+        coches.forEach(coche => {
+            const cocheModelo = coche.getAttribute('data-modelo');
+            const cocheCombustible = coche.getAttribute('data-combustible');
+            const cochePrecio = parseFloat(coche.getAttribute('data-precio'));
+
+            const coincideModelo = modelo === '' || cocheModelo.includes(modelo);
+            const coincideCombustible = combustible === '' || cocheCombustible.includes(combustible);
+            const coincidePrecio = cochePrecio >= precioMin && cochePrecio <= precioMax;
+
+            if (coincideModelo && coincideCombustible && coincidePrecio) {
+                coche.style.display = 'flex';
+            } else {
+                coche.style.display = 'none';
+            }
+        });
+    }
+
+    function resetFiltros() {
+        document.getElementById('filtro-modelo').value = '';
+        document.getElementById('filtro-combustible').value = '';
+        document.getElementById('filtro-precio-min').value = '';
+        document.getElementById('filtro-precio-max').value = '';
+
+        const coches = document.querySelectorAll('.coche-card');
+        coches.forEach(coche => {
+            coche.style.display = 'flex';
+        });
+    }
+</script>
+
 </body>
 </html>

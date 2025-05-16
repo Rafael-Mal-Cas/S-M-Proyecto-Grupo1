@@ -6,6 +6,9 @@
 
 /* Estilos específicos para el catálogo */
 .catalogo-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
@@ -22,18 +25,38 @@
     margin-bottom: 10px;
 }
 
+.filtros-container {
+    width: 250px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    position: sticky;
+    top: 80px; /* Ajusta según la altura de tu navbar */
+    align-self: start;
+    /* eliminar height para no interferir con sticky */
+}
+
 .catalogo-grid {
+    flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-    padding: 20px;
+    gap: 20px;
+    align-items: start;
 }
 
 .coche-card {
-    background-color: white;
+    border: 1px solid #ddd;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -44,12 +67,13 @@
 
 .coche-imagen {
     width: 100%;
-    height: 180px;
+    height: 160px;
     object-fit: cover;
 }
 
 .coche-info {
-    padding: 15px;
+    padding: 10px;
+    flex-grow: 1;
 }
 
 .coche-info h2 {
@@ -65,24 +89,14 @@
 }
 
 .coche-precio {
+    margin-top: 8px;
     font-weight: bold;
-    color: #2196F3;
-    font-size: 1.2em;
-    margin: 10px 0;
+    color: #2a7ae2;
+    font-size: 1.1em;
+    text-align: center;
 }
 
-.filtros-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 30px;
-    padding: 15px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
+/* Filtros genéricos */
 .filtros-container select, 
 .filtros-container input {
     padding: 8px 12px;
@@ -107,9 +121,18 @@
 
 /* Responsive */
 @media screen and (max-width: 768px) {
+    .catalogo-container {
+        flex-direction: column;
+    }
+    .filtros-container {
+        position: relative; /* Desactiva sticky en pantallas pequeñas */
+        width: 100%;
+        top: auto;
+        align-self: auto;
+        margin-bottom: 20px;
+    }
     .catalogo-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 20px;
     }
 }
 
@@ -118,7 +141,10 @@
         grid-template-columns: 1fr;
     }
     
-    .filtros-container {
-        flex-direction: column;
+    .filtros-container select, 
+    .filtros-container input, 
+    .filtros-container button {
+        width: 100%; /* Mejor ancho en móviles */
+        box-sizing: border-box;
     }
 }
