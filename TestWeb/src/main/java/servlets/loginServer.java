@@ -35,7 +35,7 @@ public class loginServer extends HttpServlet {
 
         try {
             conn = DatabaseConnection.getConnection();
-            String sql = "SELECT * FROM usuarios WHERE usuario = ? AND contrasena = ?";
+            String sql = "SELECT * FROM usuarios_simplificados WHERE usuario = ? AND contrasena = ?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
             stmt.setString(2, password);

@@ -23,7 +23,7 @@ public class InicializadorUsuarios implements ServletContextListener {
 
     private void cargarUsuariosDesdeBD(ServletContextEvent sce) {
         List<User> usuarios = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios";
+        String sql = "SELECT * FROM usuarios_simplificados";
 
         try (Connection conn = utils.DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();

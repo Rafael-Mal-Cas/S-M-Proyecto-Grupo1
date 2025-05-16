@@ -1,34 +1,36 @@
 package utils;
-
+ 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+ 
+/**
+* Clase de utilidad para establecer una conexión directa con una base de datos MySQL.
+* Usa el driver JDBC y conexión segura mediante SSL.
+*/
 public class DatabaseConnection {
-    // URL real del servidor MySQL con puerto y base de datos
-    private static final String URL = "jdbc:mysql://mysql-b6091e0-sm-a9ae.i.aivencloud.com:27803/defaultdb?useSSL=true&requireSSL=true&verifyServerCertificate=true&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-    private static final String USER = "avnadmin";
-    private static final String PASS = "AVNS_uEUTJpymChrFyq_8npz"; 
-    
-    // Parámetros para usar conexión segura con SSL
-    private static final String CONNECTION_PARAMS = 
-        "?useSSL=true" +
-        "&requireSSL=true" +
-        "&verifyServerCertificate=true" +
-        "&allowPublicKeyRetrieval=true" +
-        "&autoReconnect=true" +
-        "&connectTimeout=5000" +
-        "&socketTimeout=30000";
-
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error al cargar el driver JDBC", e);
-        }
-    }
-
+    /**
+     * Método que devuelve una conexión activa a la base de datos.
+     * 
+     * @return Objeto Connection para ejecutar consultas SQL.
+     * @throws SQLException si hay un error al conectarse.
+     */
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL + CONNECTION_PARAMS, USER, PASS);
+    	try {
+		    Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+		    e.printStackTrace();
+		}
+		String url = "jdbc:mysql://mysql-b6091e0-sm-a9ae.i.aivencloud.com:27803/defaultdb?ssl-mode=REQUIRED";
+		String usuario = "avnadmin";
+		String contraseña = "AVNS_uEUTJpymChrFyq_8npz";
+		Connection conexion = null;
+ 
+		try {
+		    conexion = DriverManager.getConnection(url, usuario, contraseña);
+		} catch (SQLException e) {
+		    e.printStackTrace();
+		}
+		return conexion;
     }
 }

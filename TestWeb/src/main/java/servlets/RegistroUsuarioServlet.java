@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.mindrot.jbcrypt.BCrypt;
 import utils.DatabaseConnection;
 
-@WebServlet("/RegisterServlet")
+@WebServlet("/registroUsuario")
 public class RegistroUsuarioServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -72,7 +72,7 @@ public class RegistroUsuarioServlet extends HttpServlet {
     }
 
     private boolean usuarioExiste(Connection conn, String username, String email) throws SQLException {
-        String sql = "SELECT id FROM usuarios WHERE usuario = ? OR email = ?";
+        String sql = "SELECT id FROM usuarios_simplificados WHERE usuario = ? OR email = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
             stmt.setString(2, email);
@@ -83,7 +83,7 @@ public class RegistroUsuarioServlet extends HttpServlet {
     private boolean registrarUsuario(Connection conn, String nombre, String apellido, String genero,
                                      String telefono, String username, String email, String hashedPassword) 
             throws SQLException {
-        String sql = "INSERT INTO usuarios (nombre, apellido, genero, telefono, usuario, email, contrasena, fecha_registro) " +
+        String sql = "INSERT INTO usuarios_simplificados (nombre, apellido, genero, telefono, usuario, email, contrasena, fecha_registro) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nombre);

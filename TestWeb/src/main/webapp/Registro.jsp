@@ -27,7 +27,7 @@
                 <% session.removeAttribute("registroExitoso"); %>
             <% } %>
             
-            <form action="registroServer" method="post" onsubmit="return validarFormulario()">
+            <form action="registroUsuario" method="post" onsubmit="return validarFormulario()">
                 <div class="form-group">
                     <label for="nombre" class="required">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" required>

@@ -27,7 +27,7 @@ public class MiServlet extends HttpServlet {
             conn = DatabaseConnection.getConnection();
 
             // Obtener el nombre del usuario con ID = 1
-            String sql = "SELECT nombre FROM usuarios WHERE id = ?";
+            String sql = "SELECT nombre FROM usuarios_simplificados WHERE id = ?";
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, 1);
 

@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
          http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	version="3.0">
-
-	<!-- Configuración del Servlet de Registro -->
+<!--
+	
 	<servlet>
 		<servlet-name>RegistroUsuarioServlet</servlet-name>
 		<servlet-class>servlets.RegistroUsuarioServlet</servlet-class>
@@ -14,7 +14,6 @@
 		<url-pattern>/RegistroUsuarioServlet</url-pattern>
 	</servlet-mapping>
 
-	<!-- Configuración del Servlet de Login -->
 	<servlet>
 		<servlet-name>loginServer</servlet-name>
 		<servlet-class>servlets.loginServer</servlet-class>
@@ -22,7 +21,8 @@
 	<servlet-mapping>
 		<servlet-name>loginServer</servlet-name>
 		<url-pattern>/loginServer</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping>  
+	-->
 
 
 	<!-- Página de inicio por defecto -->
