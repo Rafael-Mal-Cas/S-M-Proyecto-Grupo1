@@ -51,6 +51,15 @@ body{
 }
 .dropdown-content a:hover{background:#f1f1f1;}
 .show{display:block;}
+.user-avatar{
+    width:36px;            /* ajusta tamaño a tu gusto */
+    height:36px;
+    border-radius:50%;
+    object-fit:cover;
+    cursor:pointer;
+    border:2px solid #2196f3;   /* opcional, mismo estilo que el perfil */
+}
+
 
 /*-------------------------------------------------------
   CONTENEDOR PRINCIPAL

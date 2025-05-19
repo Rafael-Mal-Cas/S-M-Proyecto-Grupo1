@@ -16,6 +16,14 @@ if (foto == null || foto.trim().isEmpty()) {
     foto = "https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f464.svg";
 }
 %>
+<%
+    // 1.‑Obtenemos la ruta de la foto o aplicamos el avatar por defecto
+    String fotoPerfil = usuario.getImagen();
+    if (fotoPerfil == null || fotoPerfil.trim().isEmpty()) {
+        // Usa el mismo PNG/SVG que definiste como fallback
+        fotoPerfil = "Style/default-user.svg";
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,13 +37,14 @@ if (foto == null || foto.trim().isEmpty()) {
 <header class="navbar">
     <div class="logo">Venta de coches</div>
 
-    <div class="user-menu">
-        <i class="fas fa-user-circle user-icon" onclick="toggleDropdown()"></i>
-        <div id="dropdown" class="dropdown-content">
-            <span class="username"><strong><%= usuario.getUsuario() %></strong></span>
-            <a href="logout.jsp">Cerrar sesión</a>
-        </div>
-    </div>
+	<div class="user-menu">
+	    <img id="avatar-btn" src="<%= fotoPerfil %>" class="user-avatar" alt="Perfil">
+
+	    <div id="dropdown" class="dropdown-content">
+	        <span class="username"><strong><%= usuario.getUsuario() %></strong></span>
+	        <a href="logout.jsp">Cerrar sesión</a>
+	    </div>
+	</div>
 </header>
 
 <main class="contenido">
@@ -85,7 +94,22 @@ function togglePwd(){
     }
 }
 </script>
+<script>
+/* abre / cierra el dropdown */
+document.getElementById('avatar-btn').addEventListener('click', function (e) {
+    // evitamos que el clic se propague y cierre inmediatamente el menú
+    e.stopPropagation();
+    document.getElementById('dropdown').classList.toggle('show');
+});
 
+/* cierra si haces clic fuera */
+window.addEventListener('click', function () {
+    const dd = document.getElementById('dropdown');
+    if (dd.classList.contains('show')) {
+        dd.classList.remove('show');
+    }
+});
+</script>
 <script>
 
 function toggleDropdown(){
