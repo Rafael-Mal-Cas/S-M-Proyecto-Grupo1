@@ -56,7 +56,7 @@
         } else {
         %>
             <div class="card">
-                <h1>Bienvenido a MiSitio</h1>
+                <h1>Bienvenido a Venta de coches</h1>
                 <p>Por favor, inicia sesión o regístrate para continuar.</p>
             </div>
         <%

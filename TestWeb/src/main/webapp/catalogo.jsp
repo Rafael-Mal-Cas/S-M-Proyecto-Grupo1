@@ -43,7 +43,6 @@
     </div>
 </header>
 
-
 <main>
     <div class="catalogo-container">
         <!-- FILTROS A LA IZQUIERDA -->
@@ -105,22 +104,33 @@
                 for (coche c : coches) {
             %>
             <div class="coche-card" data-modelo="<%= c.getModelo().toLowerCase() %>" data-combustible="<%= c.getCombustible().toLowerCase() %>" data-precio="<%= c.getPrecio() %>">
-                <img src="<%= c.getImagen() %>" alt="<%= c.getMarca() + " " + c.getModelo() %>" class="coche-imagen" onerror="this.src='https://placehold.co/300x180?text=Sin+imagen';">
-                <div class="coche-info">
-                    <h2><%= c.getMarca() %> <%= c.getModelo() %></h2>
-                    <p>Año: <%= c.getAnio() %></p>
-                    <p>Color: <%= c.getColor() %></p>
-                    <p>Motor: <%= c.getMotor() %></p>
-                    <p>Combustible: <%= c.getCombustible() %></p>
-                    <div class="coche-precio precio-sin-formato" data-precio-raw="<%= c.getPrecio() %>"><%= c.getPrecio() %> €</div>
-                </div>
-            </div>
+			        <img src="<%= c.getImagen() %>" alt="<%= c.getMarca() + " " + c.getModelo() %>" class="coche-imagen" onerror="this.src='https://placehold.co/300x180?text=Sin+imagen';">
+			        <div class="coche-info">
+			            <h2><%= c.getMarca() %> <%= c.getModelo() %></h2>
+			            <p>Año: <%= c.getAnio() %></p>
+			            <p>Color: <%= c.getColor() %></p>
+			            <p>Motor: <%= c.getMotor() %></p>
+			            <p>Combustible: <%= c.getCombustible() %></p>
+					<div class="coche-precio precio-sin-formato" data-precio-raw="<%= c.getPrecio() %>"><%= c.getPrecio() %> €</div>
+					<form action="seleccionarVehiculo" method="get">
+					    <input type="hidden" name="idVehiculo" value="<%= c.getId() %>" />
+					    <br>
+					    <button type="submit">Ver detalles</button>
+					</form>
+				</div>
+			</div>
             <%
                 }
             %>
         </div>
     </div>
 </main>
+
+<button id="scrollTopBtn">
+  <img src="https://cdn-icons-png.flaticon.com/512/159/159665.png" alt="Subir" />
+</button>
+
+
 
 <script>
 let lastScroll = 0;
@@ -208,6 +218,23 @@ window.addEventListener('scroll', () => {
         });
     });
 </script>
+
+<script>
+const scrollBtn = document.getElementById('scrollTopBtn');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 200) {
+        scrollBtn.classList.add('show');
+    } else {
+        scrollBtn.classList.remove('show');
+    }
+});
+
+scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+
 
 </body>
 </html>

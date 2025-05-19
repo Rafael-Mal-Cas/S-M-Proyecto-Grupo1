@@ -22,6 +22,15 @@
 		<servlet-name>loginServer</servlet-name>
 		<url-pattern>/loginServer</url-pattern>
 	</servlet-mapping>  
+	
+	<servlet>
+	    <servlet-name>SeleccionarVehiculoServlet</servlet-name>
+	    <servlet-class>tu.paquete.SeleccionarVehiculoServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>SeleccionarVehiculoServlet</servlet-name>
+	    <url-pattern>/SeleccionarVehiculoServlet</url-pattern>
+	</servlet-mapping>
 	-->
 
 
