@@ -106,7 +106,7 @@
                 for (coche c : coches) {
             %>
             <div class="coche-card" data-modelo="<%= c.getModelo().toLowerCase() %>" data-combustible="<%= c.getCombustible().toLowerCase() %>" data-precio="<%= c.getPrecio() %>">
-                <img src="<%= c.getImagen() %>" alt="<%= c.getMarca() + " " + c.getModelo() %>" class="coche-imagen" onerror="this.src='https://via.placeholder.com/300x180?text=Imagen+no+disponible'">
+                <img src="<%= c.getImagen() %>" alt="<%= c.getMarca() + " " + c.getModelo() %>" class="coche-imagen" onerror="this.src='https://placehold.co/300x180?text=Sin+imagen';">
                 <div class="coche-info">
                     <h2><%= c.getMarca() %> <%= c.getModelo() %></h2>
                     <p>Año: <%= c.getAnio() %></p>
