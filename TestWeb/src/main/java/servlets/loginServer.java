@@ -1,61 +1,86 @@
 package servlets;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-/**
- * Servlet encargado de gestionar las peticiones de inicio de sesión.
- * Recibe los datos del formulario de login y los compara con una lista de usuarios
- * previamente almacenada en el contexto de la aplicación.
- */
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import modelo.User;
+import org.mindrot.jbcrypt.BCrypt;
+import utils.DatabaseConnection;
+
 @WebServlet("/loginServer")
 public class loginServer extends HttpServlet {
 
-    /**
-     * Método que se ejecuta cuando se realiza una petición POST al servlet,
-     * normalmente desde un formulario de inicio de sesión.
-     *
-     * @param request  Objeto que contiene la solicitud del cliente.
-     * @param response Objeto que permite responder al cliente.
-     * @throws ServletException Si ocurre un error en la ejecución del servlet.
-     * @throws IOException Si ocurre un error de entrada/salida.
-     */
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
-        // Obtener los parámetros enviados desde el formulario (nombre de usuario y contraseña)
         String username = request.getParameter("usuario");
         String password = request.getParameter("clave");
 
-        // Variable para indicar si el usuario ha sido encontrado y autenticado correctamente
-        boolean usuarioEncontrado = false;
+        User usuarioAutenticado = null;
 
-        // Obtener la lista de usuarios almacenada en el contexto de la aplicación
-        List<String[]> usuarios = (List<String[]>) getServletContext().getAttribute("usuarios");
+        try (Connection conn = DatabaseConnection.getConnection()) {
 
-        // Comprobar si la lista existe y buscar coincidencia con los datos introducidos
-        if (usuarios != null) {
-            for (String[] usuario : usuarios) {
-                // Verificar si el nombre de usuario y la contraseña coinciden
-                if (usuario[0].equals(username) && usuario[1].equals(password)) {
-                    usuarioEncontrado = true;
-                    break;
+            String sql = "SELECT * FROM usuarios_simplificados WHERE usuario = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, username);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        String hashedPasswordFromDb = rs.getString("contrasena");
+
+                        boolean passwordMatch = false;
+
+                        // Detectar si el hash parece bcrypt (empieza por $2a$, $2b$, $2y$)
+                        if (hashedPasswordFromDb != null && hashedPasswordFromDb.startsWith("$2a$") ||
+                            hashedPasswordFromDb.startsWith("$2b$") || hashedPasswordFromDb.startsWith("$2y$")) {
+                            // Usar BCrypt para validar
+                            passwordMatch = BCrypt.checkpw(password, hashedPasswordFromDb);
+                        } else {
+                            // Contraseña sin encriptar (texto plano) - comparar directamente
+                            passwordMatch = password.equals(hashedPasswordFromDb);
+                        }
+
+                        if (passwordMatch) {
+                            usuarioAutenticado = new User();
+                            usuarioAutenticado.setId(rs.getInt("id"));
+                            usuarioAutenticado.setNombre(rs.getString("nombre"));
+                            usuarioAutenticado.setApellidos(rs.getString("apellidos"));
+                            usuarioAutenticado.setGenero(rs.getString("genero"));
+                            usuarioAutenticado.setEmail(rs.getString("email"));
+                            usuarioAutenticado.setNumeroTelefono(rs.getString("numeroTelefono"));
+                            usuarioAutenticado.setUsuario(rs.getString("usuario"));
+                            usuarioAutenticado.setContrasena(hashedPasswordFromDb);
+                            usuarioAutenticado.setImagen(rs.getString("imagen"));
+                        }
+                    }
                 }
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error de conexión con la base de datos.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
         }
 
-        if (usuarioEncontrado) {
-            // Si los datos son correctos, se guarda el nombre de usuario en la sesión
-            // y se redirige al usuario a la página principal (index.jsp)
-            request.getSession().setAttribute("username", username);
+        if (usuarioAutenticado != null) {
+            HttpSession session = request.getSession();
+            session.setAttribute("usuario", usuarioAutenticado);
+            session.setAttribute("username", usuarioAutenticado.getUsuario());
             response.sendRedirect("index.jsp");
         } else {
-            // Si los datos son incorrectos, se establece un atributo de error
-            // y se vuelve a mostrar la página de login con el mensaje correspondiente
             request.setAttribute("error", "Nombre de usuario o contraseña incorrectos.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }

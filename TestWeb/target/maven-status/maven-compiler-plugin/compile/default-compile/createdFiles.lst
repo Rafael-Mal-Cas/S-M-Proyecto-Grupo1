@@ -1,7 +1,0 @@
-modelo\User.class
-utils\DatabaseConnection.class
-servlets\RegistroUsuarioServlet.class
-servlets\MiServlet.class
-utils\DBConnection.class
-servlets\InicializadorUsuarios.class
-servlets\loginServer.class

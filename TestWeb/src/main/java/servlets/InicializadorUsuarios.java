@@ -1,47 +1,64 @@
 package servlets;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebListener;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Clase que actúa como un listener para el contexto de la aplicación web.
- * Su función principal es inicializar una lista de usuarios cuando se inicia la aplicación.
- */
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+
+import modelo.User;
+
 @WebListener
 public class InicializadorUsuarios implements ServletContextListener {
 
-    /**
-     * Método que se ejecuta automáticamente cuando se inicia la aplicación web.
-     * Aquí se crea una lista de usuarios y se almacena en el contexto de la aplicación.
-     *
-     * @param sce Evento que representa el inicio del contexto de la aplicación.
-     */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        // Crear una lista en memoria para almacenar los usuarios.
-        // Cada usuario está representado por un array de String: [nombre, contraseña].
-        List<String[]> usuarios = new ArrayList<>();
-        
-        // Agregar algunos usuarios iniciales (nombre de usuario y contraseña).
-        // Estas contraseñas están representadas aquí como texto plano (por motivos educativos).
-        usuarios.add(new String[] {"ana", "NuBG4O"});
-        usuarios.add(new String[] {"jose", "qGUpfT"});
-        usuarios.add(new String[] {"maria", "$5szY9"});
-        
-        // Guardar la lista de usuarios en el contexto de la aplicación.
-        // Esto permite que cualquier servlet o JSP pueda acceder a estos datos.
-        sce.getServletContext().setAttribute("usuarios", usuarios);
+        cargarUsuariosDesdeBD(sce);
     }
 
-    /**
-     * Método que se ejecuta automáticamente cuando se destruye el contexto de la aplicación.
-     * En este caso no se requiere realizar ninguna acción.
-     *
-     * @param sce Evento que representa la destrucción del contexto de la aplicación.
-     */
+    private void cargarUsuariosDesdeBD(ServletContextEvent sce) {
+        List<User> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios_simplificados";
+
+        try (Connection conn = utils.DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setNombre(rs.getString("nombre"));
+                user.setApellidos(rs.getString("apellidos"));
+                user.setGenero(rs.getString("genero"));
+                user.setEmail(rs.getString("email"));
+                user.setNumeroTelefono(rs.getString("numeroTelefono"));
+                user.setUsuario(rs.getString("usuario"));
+                user.setContrasena(rs.getString("contrasena"));
+                user.setImagen(rs.getString("imagen"));
+                usuarios.add(user);
+            }
+
+            sce.getServletContext().setAttribute("usuarios", usuarios);
+
+            int maxId = usuarios.stream()
+                    .mapToInt(User::getId)
+                    .max()
+                    .orElse(0);
+            sce.getServletContext().setAttribute("idCounter", maxId + 1);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al cargar usuarios desde BD externa", e);
+        }
+    }
+
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        // No se realiza ninguna acción al destruir el contexto
+        sce.getServletContext().removeAttribute("usuarios");
+        sce.getServletContext().removeAttribute("idCounter");
     }
 }
