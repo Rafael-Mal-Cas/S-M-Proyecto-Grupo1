@@ -62,7 +62,7 @@ public class loginServer extends HttpServlet {
                             usuarioAutenticado.setNumeroTelefono(rs.getString("numeroTelefono"));
                             usuarioAutenticado.setUsuario(rs.getString("usuario"));
                             usuarioAutenticado.setContrasena(hashedPasswordFromDb);
-                            usuarioAutenticado.setImagen(rs.getString("imagen")); // si lo usas en el futuro
+                            usuarioAutenticado.setImagen(rs.getString("imagen"));
                         }
                     }
                 }

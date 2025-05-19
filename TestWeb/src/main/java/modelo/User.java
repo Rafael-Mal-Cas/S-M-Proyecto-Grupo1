@@ -9,9 +9,10 @@ public class User {
     private String numeroTelefono;
     private String usuario;
     private String contrasena;
+    private String imagen;  
 
     public User(int id, String nombre, String apellidos, String genero, 
-               String email, String numeroTelefono, String usuario, String contrasena) {
+               String email, String numeroTelefono, String usuario, String contrasena, String imagen) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -20,6 +21,7 @@ public class User {
         this.numeroTelefono = numeroTelefono;
         this.usuario = usuario;
         this.contrasena = contrasena;
+        this.imagen = imagen;
     }
 
     public User() {
@@ -58,6 +60,10 @@ public class User {
     public String getContrasena() {
         return contrasena;
     }
+    
+    public String getImagen(){
+    	return imagen; 
+    } 
 
     // Setters
     public void setId(int id) {
@@ -91,6 +97,10 @@ public class User {
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
+    
+    public void setImagen(String imagen){ 
+    	this.imagen = imagen; 
+    }
 
     // Método toString() útil para debugging
     @Override
@@ -104,11 +114,9 @@ public class User {
                 ", numeroTelefono='" + numeroTelefono + '\'' +
                 ", usuario='" + usuario + '\'' +
                 ", contrasena='" + contrasena + '\'' +
+                ", imagen='" + imagen + '\'' +
                 '}';
     }
 
-	public void setImagen(String string) {
-		// TODO Auto-generated method stub
-		
-	}
+
 }
