@@ -17,6 +17,10 @@
     top: -100px; /* Ajusta según la altura del navbar */
 }
 
+main{
+	margin-top: 50px;
+}
+
 
 .catalogo-container {
     display: flex;
