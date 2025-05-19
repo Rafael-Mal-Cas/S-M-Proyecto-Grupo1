@@ -1,0 +1,164 @@
+@charset "UTF-8";
+/* catalogo.css - Extensión del Style_index.css para el catálogo */
+
+/* Mantenemos los estilos base */
+@import url('Style_index.css');
+
+/* Estilos específicos para el catálogo */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    transition: top 0.6s;
+    z-index: 1000;
+}
+.navbar.hidden {
+    top: -100px; /* Ajusta según la altura del navbar */
+}
+
+
+.catalogo-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.catalogo-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.catalogo-header h1 {
+    font-size: 2.2em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.filtros-container {
+    width: 250px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    position: sticky;
+    top: 80px; /* Ajusta según la altura de tu navbar */
+    align-self: start;
+    /* eliminar height para no interferir con sticky */
+}
+
+.catalogo-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.coche-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.coche-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.coche-imagen {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.coche-info {
+    padding: 10px;
+    flex-grow: 1;
+}
+
+.coche-info h2 {
+    font-size: 1.3em;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.coche-info p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.coche-precio {
+    margin-top: 8px;
+    font-weight: bold;
+    color: #2a7ae2;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+/* Filtros genéricos */
+.filtros-container select, 
+.filtros-container input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.filtros-container button {
+    padding: 8px 15px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.filtros-container button:hover {
+    background-color: #0b7dda;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .catalogo-container {
+        flex-direction: column;
+    }
+    .filtros-container {
+        position: relative; /* Desactiva sticky en pantallas pequeñas */
+        width: 100%;
+        top: auto;
+        align-self: auto;
+        margin-bottom: 20px;
+    }
+    .catalogo-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .catalogo-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filtros-container select, 
+    .filtros-container input, 
+    .filtros-container button {
+        width: 100%; /* Mejor ancho en móviles */
+        box-sizing: border-box;
+    }
+}
+
