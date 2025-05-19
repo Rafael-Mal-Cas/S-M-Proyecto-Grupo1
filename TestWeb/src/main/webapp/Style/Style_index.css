@@ -13,12 +13,14 @@ body {
 
 /* Navbar */
 .navbar {
-    background-color: #333;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    transition: top 0.6s;
+    z-index: 1000;
+}
+.navbar.hidden {
+    top: -100px; /* Ajusta según la altura del navbar */
 }
 
 .logo {

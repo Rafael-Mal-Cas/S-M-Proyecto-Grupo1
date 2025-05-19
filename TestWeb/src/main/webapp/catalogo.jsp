@@ -53,7 +53,6 @@
             <label for="filtro-modelo">Modelo</label>
             <select id="filtro-modelo">
                 <option value="">Todos los modelos</option>
-                <option value="Serie 3">Serie 3</option>
                 <option value="X5">X5</option>
                 <option value="i8">i8</option>
                 <option value="M4">M4</option>
@@ -122,6 +121,22 @@
         </div>
     </div>
 </main>
+
+<script>
+let lastScroll = 0;
+const navbar = document.querySelector('.navbar');
+
+window.addEventListener('scroll', () => {
+    const currentScroll = window.scrollY;
+    if (currentScroll > lastScroll && currentScroll > 50) {
+        navbar.classList.add('hidden'); // scroll hacia abajo
+    } else {
+        navbar.classList.remove('hidden'); // scroll hacia arriba
+    }
+    lastScroll = currentScroll;
+});
+</script>
+
 
  <script>
     function toggleDropdown() {
