@@ -1,0 +1,21 @@
+id,bracd,model,year,color,price,engine,fuel,image
+1,BMW,Serie 3,2021,Negro,38500,2.0L Turbo,Gasolina,https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.coches.com%2Fcoches-nuevos%2FBmw-Serie%2B3%2F&psig=AOvVaw1advv6spgLabUeJNanDDO-&ust=1746786358775000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDWtbXUk40DFQAAAAAdAAAAABAE
+2,BMW,X5,2022,Blanco,61000,3.0L I6,Diesel,https://noticias.coches.com/wp-content/uploads/2018/06/BMW-X5-2019-12.jpg
+3,BMW,i8,2020,Azul,145000,1.5L Híbrido,Híbrido,https://cdn.autobild.es/sites/navi.axelspringer.es/public/media/image/2014/10/360867-german-special-customs-radicaliza-bmw-i8.jpg?tf=3840x
+4,BMW,M4,2023,Verde Lima,77000,3.0L TwinTurbo,Gasolina,https://macote.fr/wp-content/uploads/2023/06/Bmw-m4-G82-Tuning-Lime-green-1024x575.jpeg.webp
+5,BMW,X1,2022,Gris,42000,2.0L Turbo,Gasolina,https://motor.elpais.com/wp-content/uploads/2022/09/P90479836_highRes_bmw-ix1-xdrive30-web-.jpg
+6,BMW,Z4,2019,Rojo,51000,2.0L Turbo,Gasolina,https://mediapool.bmwgroup.com/cache/P9/202303/P90497137/P90497137-bmw-z4-m40i-san-francisco-red-metallic-2250px.jpg
+7,BMW,X3,2021,Azul Oscuro,47000,2.0L Diesel,Diesel,https://mediapool.bmwgroup.com/cache/P9/201706/P90263701/P90263701-the-new-bmw-x3-xdrive-m40i-exterior-color-phytonic-blue-metallic-upholstery-leder-vernasca-cognac-06-2249px.jpg
+8,BMW,M2,2023,Naranja,68000,3.0L TwinTurbo,Gasolina,https://cdn.topgear.es/sites/navi.axelspringer.es/public/media/image/2019/04/bmw-m2-competition-ac-schnitzer.jpg
+9,BMW,i3,2020,Plateado,35000,Eléctrico,Eléctrico,https://carwow-es-wp-0.imgix.net/BMW-i3-2018-1600-0f-1.jpg?auto=format&cs=tinysrgb&fit=clip&ixlib=rb-1.1.0&q=10&w=460
+10,BMW,Serie 5,2022,Azul Marino,52000,2.0L Turbo,Gasolina,https://mediapool.bmwgroup.com/cache/P9/202005/P90389007/P90389007-the-new-bmw-530e-xdrive-sedan-phytonic-blue-metallic-m-sport-package-05-2020-600px.jpg
+11,BMW,X6,2021,Negro Mate,72000,3.0L V6,Gasolina,https://www.bmw.es/content/dam/bmw/common/all-models/m-series/x6m/2023/highlights/bmw-m-series-x6-m-sp-desktop.jpg
+12,BMW,X2,2021,Amarillo,41000,2.0L,Gasolina,https://imagenes.diariodenavarra.es/files/gallery_mobile_filter/uploads/2018/03/23/60b16aaa39316.jpeg
+13,BMW,Serie 7,2022,Gris Oscuro,98000,3.0L Híbrido,Híbrido,https://fotos.quecochemecompro.com/bmw-serie-7-hibrido/bmw-serie7-hibrido-dinamismo-urbano.jpg?size=750x400
+14,BMW,X4,2023,Blanco Perla,58000,2.0L,Gasolina,https://images.ctfassets.net/uaddx06iwzdz/13fq2MezEAGeENO7O4hkpk/0d5c2086cb4e98fa5b24694c33f683dd/bmw-x4-l-03.jpg
+15,BMW,M5,2021,Azul eléctrico,98000,4.4L V8,Gasolina,https://hips.hearstapps.com/es.h-cdn.co/cades/contenidos/10607/bmw-m5-2018.jpg
+16,BMW,iX,2023,Gris Piedra,87000,Eléctrico,Eléctrico,https://mediapool.bmwgroup.com/cache/P9/202105/P90422105/P90422105-the-bmw-ix-xdrive50-06-2021-600px.jpg
+17,BMW,M8,2023,Negro,132000,4.4L V8,Gasolina,https://images.ecestaticos.com/hMbM8m7kD_wzdvgfq79mjPllj-8=/428x403:2223x1413/1440x810/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2F47d%2F90f%2F098%2F47d90f0980d7e95b0ee3901074e03de8.jpg
+18,BMW,X7,2022,Azul Medianoche,94000,3.0L,Gasolina,https://www.bmw.es/content/dam/bmw/common/all-models/m-series/x7-m60i/2022/highlights/bmw-x-series-x7-m60i-sp-desktop.jpg
+19,BMW,Serie 1,2021,Rojo,30000,1.5L Turbo,Gasolina,https://a.ccdn.es/cnet/contents/media/bmw/serie_1/1189180.jpg/900x505cut/
+20,BMW,i4,2023,Blanco,58000,Eléctrico,Eléctrico,https://fotos.quecochemecompro.com/bmw-i4/bmw-i4-electrico-en-movimiento.jpeg?size=750x400
