@@ -33,7 +33,6 @@ if (foto == null || foto.trim().isEmpty()) {
         <i class="fas fa-user-circle user-icon" onclick="toggleDropdown()"></i>
         <div id="dropdown" class="dropdown-content">
             <span class="username"><strong><%= usuario.getUsuario() %></strong></span>
-            <a href="cuenta.jsp">Cuenta</a>
             <a href="logout.jsp">Cerrar sesión</a>
         </div>
     </div>
