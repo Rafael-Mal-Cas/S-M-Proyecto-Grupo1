@@ -5,6 +5,10 @@
 @import url('Style_index.css');
 
 /* Estilos específicos para el catálogo */
+.navbar {
+  --
+}
+
 .catalogo-container {
     display: flex;
     gap: 20px;
@@ -148,3 +152,4 @@
         box-sizing: border-box;
     }
 }
+

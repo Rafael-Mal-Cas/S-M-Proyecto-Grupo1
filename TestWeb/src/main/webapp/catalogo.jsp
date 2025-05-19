@@ -2,7 +2,6 @@
 <%@ page import="modelo.catalogo" %>
 <%@ page import="modelo.coche" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -114,7 +113,7 @@
                     <p>Color: <%= c.getColor() %></p>
                     <p>Motor: <%= c.getMotor() %></p>
                     <p>Combustible: <%= c.getCombustible() %></p>
-                    <div class="coche-precio"><%= c.getPrecio() %> €</div>
+                    <div class="coche-precio precio-sin-formato" data-precio-raw="<%= c.getPrecio() %>"><%= c.getPrecio() %> €</div>
                 </div>
             </div>
             <%
@@ -178,6 +177,21 @@
             coche.style.display = 'flex';
         });
     }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Formatear precios al cargar la página
+        const precios = document.querySelectorAll('.precio-sin-formato');
+        precios.forEach(precioElement => {
+            const valorNumerico = parseFloat(precioElement.getAttribute('data-precio-raw'));
+            precioElement.textContent = new Intl.NumberFormat('es-ES', {
+                style: 'decimal',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(valorNumerico) + ' €';
+        });
+    });
 </script>
 
 </body>
