@@ -10,14 +10,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="Style/Style_index.css" />
     <link rel="stylesheet" href="Style/Style_catalogo.css" />
-    <link rel="icon" type="image/png" href="Style/logo.png" />
+    <link rel="icon" type="image/png" href="Style/logo_blanco.png" />
 
 </head>
 <body> <!-- sss -->
 
 <header class="navbar">
     <div style="display: flex; align-items: center; gap: 20px;">
-        <div class="logo">Venta de coches</div>
+        <a href="index.jsp" class="logo" style="cursor: pointer;">
+        	<img src="Style/logo_blanco.png" style="width: 53px; height: 53px;">
+    	</a>
         <% 
             String usuario = (String) session.getAttribute("username");
             if (usuario != null) {

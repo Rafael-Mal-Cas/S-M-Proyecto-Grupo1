@@ -79,7 +79,7 @@ if (fotoPerfil == null || fotoPerfil.trim().isEmpty()) {
     <title>Tu Cuenta - <%= usuario.getNombre() %></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="Style/Style_Cuenta.css">
-    <link rel="icon" type="image/png" href="Style/logo.png" />
+    <link rel="icon" type="image/png" href="Style/logo_blanco.png" />
     <style>
         .compras-section {
             margin-top: 2rem;
