@@ -248,5 +248,20 @@ window.addEventListener('scroll', () => {
 			}); 
 		}); 
 </script> 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Formatear precios al cargar la página
+        const precios = document.querySelectorAll('.precio-sin-formato');
+        precios.forEach(precioElement => {
+            const valorNumerico = parseFloat(precioElement.getAttribute('data-precio-raw'));
+            precioElement.textContent = new Intl.NumberFormat('es-ES', {
+                style: 'decimal',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(valorNumerico) + ' €';
+        });
+    });
+</script>
+
 </body> 
 </html> 
