@@ -26,33 +26,46 @@ public class loginServer extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String username = request.getParameter("usuario");
+        // Recogemos el parámetro 'usuario' del formulario,
+        // este campo servirá tanto para el nombre de usuario como para el email
+        String usernameOrEmail = request.getParameter("usuario");
         String password = request.getParameter("clave");
 
         User usuarioAutenticado = null;
 
         try (Connection conn = DatabaseConnection.getConnection()) {
 
-            String sql = "SELECT * FROM usuarios_simplificados WHERE usuario = ?";
+            // La consulta busca en la tabla usuarios_simplificados
+            // donde coincida el usuario O el email con lo que nos pase el usuario
+            String sql = "SELECT * FROM usuarios_simplificados WHERE usuario = ? OR email = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, username);
+                // Seteamos el mismo parámetro para usuario y email (se permite login con cualquiera)
+                stmt.setString(1, usernameOrEmail);
+                stmt.setString(2, usernameOrEmail);
+
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
+                        // Obtenemos la contraseña almacenada (hasheada o en texto plano)
                         String hashedPasswordFromDb = rs.getString("contrasena");
 
                         boolean passwordMatch = false;
 
-                        // Detectar si el hash parece bcrypt (empieza por $2a$, $2b$, $2y$)
-                        if (hashedPasswordFromDb != null && hashedPasswordFromDb.startsWith("$2a$") ||
-                            hashedPasswordFromDb.startsWith("$2b$") || hashedPasswordFromDb.startsWith("$2y$")) {
-                            // Usar BCrypt para validar
+                        // Comprobamos si la contraseña en BD está en formato bcrypt
+                        // Los hashes bcrypt empiezan por $2a$, $2b$ o $2y$
+                        if (hashedPasswordFromDb != null && 
+                            (hashedPasswordFromDb.startsWith("$2a$") || 
+                             hashedPasswordFromDb.startsWith("$2b$") || 
+                             hashedPasswordFromDb.startsWith("$2y$"))) {
+                            // Si está hasheada, usamos BCrypt para validar la contraseña
                             passwordMatch = BCrypt.checkpw(password, hashedPasswordFromDb);
                         } else {
-                            // Contraseña sin encriptar (texto plano) - comparar directamente
+                            // Si la contraseña está en texto plano (no recomendado),
+                            // comparamos directamente las cadenas
                             passwordMatch = password.equals(hashedPasswordFromDb);
                         }
 
                         if (passwordMatch) {
+                            // Creamos el objeto User con los datos recuperados para usar en la sesión
                             usuarioAutenticado = new User();
                             usuarioAutenticado.setId(rs.getInt("id"));
                             usuarioAutenticado.setNombre(rs.getString("nombre"));
@@ -69,6 +82,7 @@ public class loginServer extends HttpServlet {
             }
 
         } catch (SQLException e) {
+            // Capturamos errores de base de datos y mostramos mensaje en login.jsp
             e.printStackTrace();
             request.setAttribute("error", "Error de conexión con la base de datos.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -76,11 +90,14 @@ public class loginServer extends HttpServlet {
         }
 
         if (usuarioAutenticado != null) {
+            // Si el login es correcto, creamos sesión y guardamos el usuario autenticado
             HttpSession session = request.getSession();
             session.setAttribute("usuario", usuarioAutenticado);
             session.setAttribute("username", usuarioAutenticado.getUsuario());
+            // Redirigimos a la página principal
             response.sendRedirect("index.jsp");
         } else {
+            // Si no se autentica, mostramos mensaje de error en login.jsp
             request.setAttribute("error", "Nombre de usuario o contraseña incorrectos.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }

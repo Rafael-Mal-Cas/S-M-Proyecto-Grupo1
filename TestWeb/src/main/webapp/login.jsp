@@ -21,7 +21,7 @@
                 }
             %>
             <form action="loginServer" method="post">
-                <label for="usuario">Usuario:</label>
+                <label for="usuario">Usuario/Email:</label>
                 <input type="text" id="usuario" name="usuario" required /><br/>
                 <label for="clave">Contraseña:</label>
                 <input type="password" id="clave" name="clave" required /><br/>
