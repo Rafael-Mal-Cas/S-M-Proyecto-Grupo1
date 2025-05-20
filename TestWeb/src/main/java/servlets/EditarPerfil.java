@@ -24,7 +24,7 @@ import utils.DatabaseConnection;
 public class EditarPerfil extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+    	request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
         User usuario = (User) session.getAttribute("usuario");
 
