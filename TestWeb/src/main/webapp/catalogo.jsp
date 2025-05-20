@@ -68,7 +68,7 @@
             <img src="Style/logo_blanco.png" style="width: 53px; height: 53px;">
         </a>
         <%-- Como el usuario ya está comprobado, mostramos el enlace --%>
-        <a href="catalogo.jsp" style="color: white; text-decoration: none; font-weight: bold;">Catálogo</a>
+        <a href="catalogo.jsp" style="color: white; text-decoration: none;">Catálogo</a>
     </div>
     <div class="user-menu">
         <img id="avatar-btn" src="<%= fotoPerfil %>" class="user-avatar" alt="Foto de perfil de <%= usuario.getUsuario() %>" onclick="toggleDropdown()" style="cursor:pointer; width: 40px; height: 40px; border-radius: 50%;">
