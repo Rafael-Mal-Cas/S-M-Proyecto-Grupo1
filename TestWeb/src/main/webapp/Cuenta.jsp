@@ -131,12 +131,17 @@ if (fotoPerfil == null || fotoPerfil.trim().isEmpty()) {
             <span><%= usuario.getGenero().equals("male") ? "Masculino" : usuario.getGenero().equals("female") ? "Femenino" : "Otro" %></span>
 
             <span class="info-label">Contraseña:</span>
-            <span>
-                <input id="pwdField" type="password" value="<%= usuario.getContrasena() %>" readonly>
-                <button type="button" class="eye-btn" onclick="togglePwd()">
-                    <i id="eyeIcon" class="fas fa-eye"></i>
-                </button>
-            </span>
+			<span>
+			    <input id="pwdField" type="password" value="<%= usuario.getContrasena() %>" readonly>
+			    <button type="button" class="eye-btn" onclick="togglePwd()">
+			        <i id="eyeIcon" class="fas fa-eye"></i>
+			    </button>
+			</span>
+			
+			<div style="margin-top: 20px;">
+			    <a href="editarPerfil.jsp" class="btn-primary">Editar cuenta</a>
+			</div>
+						
         </div>
 
         <a href="index.jsp" class="btn-primary">Volver al inicio</a>
