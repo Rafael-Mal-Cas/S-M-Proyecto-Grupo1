@@ -1,0 +1,182 @@
+/*-------------------------------------------------------
+  RESET BÁSICO
+-------------------------------------------------------*/
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#f0f2f5;
+    color:#222;
+}
+
+/*-------------------------------------------------------
+  NAVBAR
+-------------------------------------------------------*/
+.navbar{
+    background:#333;
+    color:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 20px;
+}
+.logo{
+    font-size:1.6rem;
+    font-weight:700;
+}
+.user-menu{position:relative;}
+.user-icon{
+    font-size:1.9rem;
+    cursor:pointer;
+}
+/* Dropdown */
+.dropdown-content{
+    display:none;
+    position:absolute;
+    right:0;
+    background:#fff;
+    min-width:160px;
+    box-shadow:0 8px 16px rgba(0,0,0,.2);
+    border-radius:6px;
+    overflow:hidden;
+    z-index:10;
+}
+.dropdown-content a,
+.dropdown-content .username{
+    display:block;
+    padding:12px 16px;
+    text-decoration:none;
+    color:#111;
+    font-size:.95rem;
+}
+.dropdown-content a:hover{background:#f1f1f1;}
+.show{display:block;}
+.user-avatar{
+    width:36px;            /* ajusta tamaño a tu gusto */
+    height:36px;
+    border-radius:50%;
+    object-fit:cover;
+    cursor:pointer;
+    border:2px solid #2196f3;   /* opcional, mismo estilo que el perfil */
+}
+
+
+/*-------------------------------------------------------
+  CONTENEDOR PRINCIPAL
+-------------------------------------------------------*/
+.contenido{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:40px 20px;
+}
+
+/*-------------------------------------------------------
+  TARJETA PERFIL
+-------------------------------------------------------*/
+.profile-card{
+    background:#fff;
+    padding:2.5rem 2rem;
+    border-radius:12px;
+    max-width:650px;
+    width:100%;
+    box-shadow:0 4px 10px rgba(0,0,0,.1);
+    text-align: left;;
+}
+.profile-card h1{
+    font-size:1.9rem;
+    margin-bottom:1.5rem;
+    color:#222;
+}
+
+/* FOTO + INFO */
+.profile-section{
+    display:flex;
+    align-items: left;
+    gap:50px;
+    flex-wrap:wrap;
+    margin-bottom:1.8rem;
+}
+.avatar{
+    width:140px;height:140px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #2196f3;
+}
+.profile-info h2{margin:0 0 6px;font-size:1.45rem;}
+.profile-info p{
+    margin:5px 0;
+    color:#555;
+    font-size:.95rem;
+}
+
+/* GRID DE DETALLES */
+.info-grid{
+    display:grid;
+    grid-template-columns:130px 1fr;
+    gap:14px 18px;
+    margin-left:29px;
+    margin-bottom:32px;
+    word-break:break-word;
+}
+.info-label{
+    font-weight:600;
+    color:#444;
+}
+/* Campo contraseña “solo-lectura” */
+#pwdField{
+    border:1px solid #ccc;
+    border-radius:6px;
+    padding:6px 10px;
+    font-size:.95rem;
+    width:70%;
+}
+.eye-btn{
+    background:none;border:none;cursor:pointer;
+    margin-left:8px;font-size:1rem;color:#2196f3;
+    vertical-align:middle;
+}
+
+/*-------------------------------------------------------
+  BOTÓN PRIMARIO REUTILIZABLE
+-------------------------------------------------------*/
+.btn-primary{
+    display:inline-block;
+    background:#2196f3;
+    color:#fff;
+    padding:.8rem 2rem;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+    transition:background .2s;
+}
+.btn-primary:hover{background:#0b7dda;}
+
+/*-------------------------------------------------------
+  MEDIA‑QUERIES
+-------------------------------------------------------*/
+/* Tablets <= 768 px */
+@media(max-width:768px){
+    .logo{font-size:1.3rem;}
+    .user-icon{font-size:1.7rem;}
+    .profile-card{padding:2rem 1.5rem;}
+    .profile-section{gap:40px;}
+    #pwdField{width:65%;}
+}
+
+/* Móviles <= 600 px */
+@media(max-width:600px){
+    .navbar{flex-direction:column;align-items:flex-start;}
+    .user-menu{align-self:flex-end;}
+
+    .profile-section{flex-direction:column;align-items:center;}
+    .info-grid{grid-template-columns:1fr;}
+    .info-label{margin-bottom:4px;}
+    #pwdField{width:calc(100% - 40px);}
+}
+
+/* Mini‑móviles <= 400 px */
+@media(max-width:400px){
+    .avatar{width:110px;height:110px;}
+    .profile-info h2{font-size:1.25rem;}
+}
