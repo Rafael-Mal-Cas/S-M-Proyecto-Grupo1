@@ -1,7 +1,20 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="modelo.catalogo" %>
 <%@ page import="modelo.coche" %>
+<%@ page import="modelo.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    User usuario = (User) session.getAttribute("usuario");
+    if (usuario == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+    
+    String fotoPerfil = usuario.getImagen();
+    if (fotoPerfil == null || fotoPerfil.trim().isEmpty()) {
+        fotoPerfil = "Style/default-user.svg";
+    }
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,41 +22,42 @@
     <title>Catálogo de Coches </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="Style/Style_catalogo.css" />
-     <link rel="icon" type="image/png" href="Style/logo_blanco.png" />
-	<style>
-		.subir {
-		    position: fixed;
-		    bottom: 20px;
-		    right: 20px;
-		    width: 50px;
-		    height: 50px;
-		    border: none;
-		    border-radius: 50%;
-		    cursor: pointer;
-		    z-index: 1000;
-		    background-color: white;
-		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-		    opacity: 0;
-		    transform: translateX(100%);
-		    transition: transform 0.3s ease, opacity 0.3s ease;
-		    pointer-events: none;
-		    padding: 10px;
-		}
-		
-		.subir img {
-		    width: 100%;
-		    height: 100%;
-		    object-fit: contain;
-		    filter: grayscale(100%) brightness(40%);
-		    opacity: 0.7;
-		}
-		
-		.subir.show {
-		    opacity: 1;
-		    transform: translateX(0);
-		    pointer-events: auto;
-		}
-	</style>
+    <link rel="icon" type="image/png" href="Style/logo_blanco.png" />
+    <style>
+        /* estilos que tenías, sin cambios */
+        .subir {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            pointer-events: none;
+            padding: 10px;
+        }
+
+        .subir img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: grayscale(100%) brightness(40%);
+            opacity: 0.7;
+        }
+
+        .subir.show {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+    </style>
 
 </head>
 <body> <!-- sss -->
@@ -51,27 +65,15 @@
 <header class="navbar">
     <div style="display: flex; align-items: center; gap: 20px;">
         <a href="index.jsp" class="logo" style="cursor: pointer;">
-        	<img src="Style/logo_blanco.png" style="width: 53px; height: 53px;">
-    	</a>
-        <% 
-            String usuario = (String) session.getAttribute("username");
-            if (usuario != null) {
-        %>
-            <a href="catalogo.jsp" style="color: white; text-decoration: none; font-weight: bold;">Catálogo</a>
-        <%
-            }
-        %>
+            <img src="Style/logo_blanco.png" style="width: 53px; height: 53px;">
+        </a>
+        <%-- Como el usuario ya está comprobado, mostramos el enlace --%>
+        <a href="catalogo.jsp" style="color: white; text-decoration: none; font-weight: bold;">Catálogo</a>
     </div>
     <div class="user-menu">
-        <% 
-            if (usuario == null) {
-                response.sendRedirect("login.jsp");
-                return;
-            }
-        %>
-        <i class="fas fa-user-circle user-icon" onclick="toggleDropdown()"></i>
+        <img id="avatar-btn" src="<%= fotoPerfil %>" class="user-avatar" alt="Foto de perfil de <%= usuario.getUsuario() %>" onclick="toggleDropdown()" style="cursor:pointer; width: 40px; height: 40px; border-radius: 50%;">
         <div id="dropdown" class="dropdown-content">
-            <span class="username"><strong><%= usuario %></strong></span>
+            <span class="username"><strong><%= usuario.getUsuario() %></strong></span>
             <a href="Cuenta.jsp">Cuenta</a>
             <a href="logout.jsp">Cerrar sesión</a>
         </div>
@@ -139,21 +141,21 @@
                 for (coche c : coches) {
             %>
             <div class="coche-card" data-modelo="<%= c.getModelo().toLowerCase() %>" data-combustible="<%= c.getCombustible().toLowerCase() %>" data-precio="<%= c.getPrecio() %>">
-			        <img src="<%= c.getImagen() %>" alt="<%= c.getMarca() + " " + c.getModelo() %>" class="coche-imagen" onerror="this.src='https://placehold.co/300x180?text=Sin+imagen';">
-			        <div class="coche-info">
-			            <h2><%= c.getMarca() %> <%= c.getModelo() %></h2>
-			            <p>Año: <%= c.getAnio() %></p>
-			            <p>Color: <%= c.getColor() %></p>
-			            <p>Motor: <%= c.getMotor() %></p>
-			            <p>Combustible: <%= c.getCombustible() %></p>
-					<div class="coche-precio precio-sin-formato" data-precio-raw="<%= c.getPrecio() %>"><%= c.getPrecio() %> €</div>
-					<form action="seleccionarVehiculo" method="get">
-					    <input type="hidden" name="idVehiculo" value="<%= c.getId() %>" />
-					    <br>
-					    <button class="form-container-d" type="submit">Ver detalles</button>
-					</form>
-				</div>
-			</div>
+                <img src="<%= c.getImagen() %>" alt="<%= c.getMarca() + " " + c.getModelo() %>" class="coche-imagen" onerror="this.src='https://placehold.co/300x180?text=Sin+imagen';">
+                <div class="coche-info">
+                    <h2><%= c.getMarca() %> <%= c.getModelo() %></h2>
+                    <p>Año: <%= c.getAnio() %></p>
+                    <p>Color: <%= c.getColor() %></p>
+                    <p>Motor: <%= c.getMotor() %></p>
+                    <p>Combustible: <%= c.getCombustible() %></p>
+                    <div class="coche-precio precio-sin-formato" data-precio-raw="<%= c.getPrecio() %>"><%= c.getPrecio() %> €</div>
+                    <form action="seleccionarVehiculo" method="get">
+                        <input type="hidden" name="idVehiculo" value="<%= c.getId() %>" />
+                        <br>
+                        <button class="form-container-d" type="submit">Ver detalles</button>
+                    </form>
+                </div>
+            </div>
             <%
                 }
             %>
@@ -164,9 +166,6 @@
 <button class="subir" id="scrollTopBtn">
   <img src="https://cdn-icons-png.flaticon.com/512/159/159665.png" alt="Subir" />
 </button>
-
-
-
 
 <script>
 let lastScroll = 0;
@@ -183,14 +182,13 @@ window.addEventListener('scroll', () => {
 });
 </script>
 
-
- <script>
+<script>
     function toggleDropdown() {
         document.getElementById("dropdown").classList.toggle("show");
     }
 
     window.onclick = function(event) {
-        if (!event.target.matches('.user-icon')) {
+        if (!event.target.matches('.user-avatar')) {
             const dropdown = document.getElementById("dropdown");
             if (dropdown && dropdown.classList.contains('show')) {
                 dropdown.classList.remove('show');
@@ -198,7 +196,6 @@ window.addEventListener('scroll', () => {
         }
     }
 </script>
-
 
 <script>
     function filtrarCatalogo() {
@@ -230,48 +227,26 @@ window.addEventListener('scroll', () => {
     function resetFiltros() {
         document.getElementById('filtro-modelo').value = '';
         document.getElementById('filtro-combustible').value = '';
-        document.getElementById('filtro-precio-min').value = '';
-        document.getElementById('filtro-precio-max').value = '';
-
-        const coches = document.querySelectorAll('.coche-card');
-        coches.forEach(coche => {
-            coche.style.display = 'flex';
-        });
-    }
+        document.getElementBy
+Id('filtro-precio-min').value = '';
+document.getElementById('filtro-precio-max').value = '';
+filtrarCatalogo();
+}
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Formatear precios al cargar la página
-        const precios = document.querySelectorAll('.precio-sin-formato');
-        precios.forEach(precioElement => {
-            const valorNumerico = parseFloat(precioElement.getAttribute('data-precio-raw'));
-            precioElement.textContent = new Intl.NumberFormat('es-ES', {
-                style: 'decimal',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(valorNumerico) + ' €';
-        });
-    });
-</script>
-
-<script>
-const scrollBtn = document.getElementById('scrollTopBtn');
-
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 200) {
-        scrollBtn.classList.add('show');
-    } else {
-        scrollBtn.classList.remove('show');
-    }
-});
-
-scrollBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-</script>
-
-
-
-</body>
-</html>
+<script> 
+// Botón subir arriba const scrollTopBtn = document.getElementById('scrollTopBtn'); 
+window.addEventListener('scroll', () => { 
+	if (window.scrollY > 100) { 
+		scrollTopBtn.classList.add('show'); 
+		} else { 
+			scrollTopBtn.classList.remove('show'); 
+			} 
+	}); 
+	scrollTopBtn.addEventListener('click', () => { 
+		window.scrollTo({ top: 0, behavior: 'smooth' 
+			}); 
+		}); 
+</script> 
+</body> 
+</html> 
