@@ -1,58 +1,58 @@
 package controlador;
 
+import modelo.catalogo;
 import modelo.coche;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 @WebServlet("/seleccionarVehiculo")
 public class SeleccionarVehiculoServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idParam = request.getParameter("idVehiculo");
-        if (idParam == null) {
-            response.sendRedirect("catalogo.jsp");
+        if (idParam == null || idParam.isEmpty()) {
+            response.sendRedirect("catalogo");
             return;
         }
 
-        int idVehiculo = Integer.parseInt(idParam);
+        int idVehiculo;
+        try {
+            idVehiculo = Integer.parseInt(idParam);
+        } catch (NumberFormatException e) {
+            response.sendRedirect("catalogo");
+            return;
+        }
 
-        // Aquí deberías buscar el coche por id en tu fuente de datos.
-        // Por simplicidad, voy a simular una búsqueda:
-        coche vehiculo = buscarVehiculoPorId(idVehiculo);
+        // Cargar catálogo desde CSV para buscar el coche
+        catalogo catalogoBMW = new catalogo();
+        String ruta = getServletContext().getRealPath("/WEB-INF/BMW_catalogo.csv");
+        catalogoBMW.cargarDesdeCSV(ruta);
+        ArrayList<coche> coches = catalogoBMW.getCoches();
 
-        if (vehiculo == null) {
-            response.sendRedirect("catalogo.jsp");
+        coche vehiculoSeleccionado = null;
+        for (coche c : coches) {
+            try {
+                if (Integer.parseInt(c.getId()) == idVehiculo) {
+                    vehiculoSeleccionado = c;
+                    break;
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        if (vehiculoSeleccionado == null) {
+            response.sendRedirect("catalogo");
             return;
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute("vehiculoSeleccionado", vehiculo);
+        session.setAttribute("vehiculoSeleccionado", vehiculoSeleccionado);
 
         response.sendRedirect("Informacion_Veiculo.jsp");
     }
-
-    // Simulación de búsqueda - reemplaza por tu lógica real
-    private coche buscarVehiculoPorId(int idVehiculo) {
-        if (idVehiculo == 1) {
-            coche c = new coche();
-            c.setId("1");
-            c.setMarca("BMW");
-            c.setModelo("X5");
-            c.setAnio(2023);
-            c.setPrecio(65000);
-            c.setColor("Negro");
-            c.setMotor("V6 Turbo");
-            c.setCombustible("Gasolina");
-            c.setImagen("Style/default-car.png");
-            return c;
-        }
-        if (idVehiculo == 2) {
-            return new coche("2", "Audi", "A4", 2022, "Blanco", 45000, "V4", "Diesel", "Style/audi-a4.png");
-        }
-        return null;
-    }
-
 }

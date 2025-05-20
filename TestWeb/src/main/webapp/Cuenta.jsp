@@ -97,16 +97,21 @@ if (fotoPerfil == null || fotoPerfil.trim().isEmpty()) {
 </head>
 <body>
 <header class="navbar">
-    <a href="index.jsp" class="logo" style="cursor: pointer;">Venta de coches</a>
+    <a href="index.jsp" class="logo" style="cursor: pointer;">
+        <img src="Style/logo_blanco.png" style="width: 53px; height: 53px;">
+    </a>
+    <a href="catalogo.jsp" style="cursor: pointer; color: white; text-decoration: none; text-align: left;">Catálogo</a>
+    
     <div class="user-menu">
         <img id="avatar-btn" src="<%= fotoPerfil %>" class="user-avatar" alt="Perfil">
         <div id="dropdown" class="dropdown-content">
             <span class="username"><strong><%= usuario.getUsuario() %></strong></span>
-            <a href="logout.jsp">Cerrar sesión</a>
+            <a href="logout.jsp">
+                <i class="fas fa-right-from-bracket" style="margin-right: 6px;"></i> Cerrar sesión
+            </a>
         </div>
     </div>
-</header>
-
+</header> 
 <main class="contenido">
     <div class="card profile-card">
         <h1>Mi cuenta</h1>
