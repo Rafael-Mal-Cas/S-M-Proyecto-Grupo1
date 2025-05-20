@@ -1,7 +1,21 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
+<%@ page import="modelo.User" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
+<%
+    User usuario = (User) session.getAttribute("usuario");
+    if (usuario == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+    
+    String fotoPerfil = usuario.getImagen();
+    if (fotoPerfil == null || fotoPerfil.trim().isEmpty()) {
+        fotoPerfil = "Style/default-user.svg";
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,52 +31,24 @@
         <a href="index.jsp" class="logo" style="cursor: pointer;">
             <img src="Style/logo_blanco.png" style="width: 53px; height: 53px;">
         </a>
-
-        <% 
-        String usuario = (String) session.getAttribute("username");
-        if (usuario != null) {
-        %>
-            <a href="catalogo.jsp" style="cursor: pointer; color: white; text-decoration: none; text-align: left;">Catálogo</a>
-        <%
-        }
-        %>
+        <a href="catalogo.jsp" style="cursor: pointer; color: white; text-decoration: none; text-align: left;">Catálogo</a>
     </div>
 
     <div class="user-menu">
         <%
-        String userImg = (String) session.getAttribute("userImg");
-
-        if (usuario != null) {
-            if (userImg == null || userImg.trim().isEmpty()) {
-                userImg = "https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f464.svg"; // Avatar por defecto
-            }
+            // Aquí usas la imagen que calculaste arriba en fotoPerfil
         %>
-            <img id="avatar-btn" src="<%= userImg %>" class="user-avatar" alt="Perfil" onclick="toggleDropdown()" style="cursor:pointer; width: 40px; height: 40px; border-radius: 50%;">
-        <%
-        } else {
-        %>
-            <i class="fas fa-user-circle user-icon" onclick="toggleDropdown()"></i>
-        <%
-        }
-        %>
-
+        <img id="avatar-btn" src="<%= fotoPerfil %>" class="user-avatar" alt="Foto de perfil de <%= usuario.getUsuario() %>" onclick="toggleDropdown()" style="cursor:pointer; width: 40px; height: 40px; border-radius: 50%;">
+        
         <div id="dropdown" class="dropdown-content">
             <%
-            if (usuario != null) {
+                // Mostrar solo el nombre de usuario, no todo el objeto
             %>
-                <span class="username"><strong><%= usuario %></strong></span>
-                <a href="Cuenta.jsp">Cuenta</a>
-                <a href="logout.jsp">
-                    <i class="fas fa-right-from-bracket" style="margin-right: 6px;"></i> Cerrar sesión
-                </a>
-            <%
-            } else {
-            %>
-                <a href="login.jsp">Iniciar sesión</a>
-                <a href="Registro.jsp">Registrarse</a>
-            <%
-            }
-            %>
+            <span class="username"><strong><%= usuario.getUsuario() %></strong></span>
+            <a href="Cuenta.jsp">Cuenta</a>
+            <a href="logout.jsp">
+                <i class="fas fa-right-from-bracket" style="margin-right: 6px;"></i> Cerrar sesión
+            </a>
         </div>
     </div>
 </header>
@@ -72,7 +58,7 @@
     if (usuario != null) {
     %>
         <div class="card">
-            <h1>Bienvenido, <%= usuario %>!</h1>
+            <h1>Bienvenido, <%= usuario.getNombre() %>!</h1>
             <span>Has iniciado sesión correctamente.</span>
         </div>
     <%

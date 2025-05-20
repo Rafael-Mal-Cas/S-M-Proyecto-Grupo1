@@ -52,10 +52,13 @@
     <title>Comprar vehículo - <%= vehiculo.getMarca() + " " + vehiculo.getModelo() %></title>
     <link rel="stylesheet" href="Style/Style_Cuenta.css" />
     <link rel="stylesheet" href="Style/Style_Info_coche.css" />
+    <link rel="icon" type="image/png" href="Style/logo_blanco.png" />
 </head>
 <body>
 <header class="navbar">
-    <div class="logo">Venta de coches</div>
+    <a href="index.jsp" class="logo" style="cursor: pointer;">
+        <img src="Style/logo_blanco.png" style="width: 53px; height: 53px;">
+    </a>
 </header>
 
 <main class="car-detail-container">

@@ -8,9 +8,42 @@
     <meta charset="UTF-8" />
     <title>Catálogo de Coches </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="Style/Style_index.css" />
     <link rel="stylesheet" href="Style/Style_catalogo.css" />
-    <link rel="icon" type="image/png" href="Style/logo_blanco.png" />
+     <link rel="icon" type="image/png" href="Style/logo_blanco.png" />
+	<style>
+		.subir {
+		    position: fixed;
+		    bottom: 20px;
+		    right: 20px;
+		    width: 50px;
+		    height: 50px;
+		    border: none;
+		    border-radius: 50%;
+		    cursor: pointer;
+		    z-index: 1000;
+		    background-color: white;
+		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		    opacity: 0;
+		    transform: translateX(100%);
+		    transition: transform 0.3s ease, opacity 0.3s ease;
+		    pointer-events: none;
+		    padding: 10px;
+		}
+		
+		.subir img {
+		    width: 100%;
+		    height: 100%;
+		    object-fit: contain;
+		    filter: grayscale(100%) brightness(40%);
+		    opacity: 0.7;
+		}
+		
+		.subir.show {
+		    opacity: 1;
+		    transform: translateX(0);
+		    pointer-events: auto;
+		}
+	</style>
 
 </head>
 <body> <!-- sss -->
@@ -90,8 +123,8 @@
             <label for="filtro-precio-max">Precio máximo (€)</label>
             <input type="number" id="filtro-precio-max" min="0" placeholder="Max">
 
-            <button type="button" onclick="filtrarCatalogo()">Filtrar</button>
-            <button type="button" onclick="resetFiltros()">Resetear</button>
+            <button class="filtro-reseteo" type="button" onclick="filtrarCatalogo()">Filtrar</button>
+            <button class="filtro-reseteo" type="button" onclick="resetFiltros()">Resetear</button>
         </div>
 
         <!-- CATÁLOGO DE COCHES AL CENTRO -->
@@ -117,7 +150,7 @@
 					<form action="seleccionarVehiculo" method="get">
 					    <input type="hidden" name="idVehiculo" value="<%= c.getId() %>" />
 					    <br>
-					    <button type="submit">Ver detalles</button>
+					    <button class="form-container-d" type="submit">Ver detalles</button>
 					</form>
 				</div>
 			</div>
@@ -128,9 +161,10 @@
     </div>
 </main>
 
-<button id="scrollTopBtn">
+<button class="subir" id="scrollTopBtn">
   <img src="https://cdn-icons-png.flaticon.com/512/159/159665.png" alt="Subir" />
 </button>
+
 
 
 
@@ -236,6 +270,7 @@ scrollBtn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 </script>
+
 
 
 </body>
