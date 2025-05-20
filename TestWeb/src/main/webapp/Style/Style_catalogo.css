@@ -267,12 +267,13 @@
     gap: 10px;
 
     position: sticky;
-    top: 80px; /* Ajusta según la altura de tu navbar */
+    top: 200px; /* Ajusta según la altura de tu navbar */
     align-self: start;
     /* eliminar height para no interferir con sticky */
 }
 
 .catalogo-grid {
+	margin-top:100px;
     flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
