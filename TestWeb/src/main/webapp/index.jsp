@@ -6,16 +6,11 @@
     
 <%
     User usuario = (User) session.getAttribute("usuario");
-    if (usuario == null) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
-    
-    String fotoPerfil = usuario.getImagen();
-    if (fotoPerfil == null || fotoPerfil.trim().isEmpty()) {
-        fotoPerfil = "Style/default-user.svg";
-    }
+    String fotoPerfil = (usuario != null && usuario.getImagen() != null && !usuario.getImagen().trim().isEmpty())
+                        ? usuario.getImagen()
+                        : "Style/default-user.svg";
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,17 +33,27 @@
         <%
             // Aquí usas la imagen que calculaste arriba en fotoPerfil
         %>
-        <img id="avatar-btn" src="<%= fotoPerfil %>" class="user-avatar" alt="Foto de perfil de <%= usuario.getUsuario() %>" onclick="toggleDropdown()" style="cursor:pointer; width: 40px; height: 40px; border-radius: 50%;">
+		<% if (usuario != null) { %>
+		    <img id="avatar-btn" src="<%= fotoPerfil %>" class="user-avatar" alt="Foto de perfil de <%= usuario.getUsuario() %>" onclick="toggleDropdown()" style="cursor:pointer; width: 40px; height: 40px; border-radius: 50%;">
+		<% } else { %>
+		    <a href="login.jsp" class="login-btn" style="color: white; text-decoration: none;">Iniciar sesión</a>
+		<% } %>
         
         <div id="dropdown" class="dropdown-content">
             <%
                 // Mostrar solo el nombre de usuario, no todo el objeto
             %>
-            <span class="username"><strong><%= usuario.getUsuario() %></strong></span>
-            <a href="Cuenta.jsp">Cuenta</a>
-            <a href="logout.jsp">
-                <i class="fas fa-right-from-bracket" style="margin-right: 6px;"></i> Cerrar sesión
-            </a>
+            <% if (usuario != null) { %>
+			    <span class="username"><strong><%= usuario.getUsuario() %></strong></span>
+			    <a href="Cuenta.jsp">Cuenta</a>
+			    <a href="logout.jsp">
+			        <i class="fas fa-right-from-bracket" style="margin-right: 6px;"></i> Cerrar sesión
+			    </a>
+			<% } else { %>
+			    <a href="login.jsp">Iniciar sesión</a>
+			    <a href="registro.jsp">Registrarse</a>
+			<% } %>
+
         </div>
     </div>
 </header>
@@ -65,12 +70,13 @@
     } else {
     %>
         <div class="card">
-            <h1>Bienvenido a Venta de coches</h1>
+            <h1>Bienvenido a <br>Practical Cars S&amp;M</h1>
             <p>Por favor, inicia sesión o regístrate para continuar.</p>
         </div>
     <%
     }
     %>
+    
 </main>
 
 <script>
