@@ -31,13 +31,21 @@ public class CompraServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. Validar sesión
         HttpSession session = request.getSession(false);
         Integer idUsuario = (session != null) ? (Integer) session.getAttribute("idUsuario") : null;
         if (idUsuario == null) {
             response.sendRedirect("login.jsp");
             return;
         }
+
+        // NUEVO: detectar si es una cancelación
+        String accion = request.getParameter("accion");
+        if ("cancelar".equals(accion)) {
+            cancelarCompra(request, response, idUsuario);
+            return;
+        }
+
+       
 
         // 2. Obtener parámetros del formulario
         int idCoche;
@@ -105,7 +113,12 @@ public class CompraServlet extends HttpServlet {
         }
     }
 
-    // ─────────────  MÉTODOS AUXILIARES  ─────────────
+    private void cancelarCompra(HttpServletRequest request, HttpServletResponse response, Integer idUsuario) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	// ─────────────  MÉTODOS AUXILIARES  ─────────────
     private boolean existeCoche(Connection conn, int idCoche) throws SQLException {
         String sql = "SELECT 1 FROM coches WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -144,4 +157,67 @@ public class CompraServlet extends HttpServlet {
             return ps.executeUpdate() == 1;
         }
     }
+    
+    @SuppressWarnings("unused")
+	private void cancelarCompra(HttpServletRequest request, HttpServletResponse response, int idUsuario)
+            throws IOException, ServletException {
+
+        HttpSession session = request.getSession(false);  // ← Añadido aquí
+
+        int idCompra;
+        String passwordInput = request.getParameter("password");
+
+        try {
+            idCompra = Integer.parseInt(request.getParameter("idCompra"));
+        } catch (Exception e) {
+            request.setAttribute("error", "ID de compra inválido.");
+            request.getRequestDispatcher("cuenta.jsp").forward(request, response);
+            return;
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+
+            // Obtener hash de contraseña del usuario
+            String sqlPwd = "SELECT contrasena FROM usuarios WHERE id = ?";
+            String hash = null;
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlPwd)) {
+                ps.setInt(1, idUsuario);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        hash = rs.getString("contrasena");
+                    }
+                }
+            }
+
+            if (hash == null || !org.mindrot.jbcrypt.BCrypt.checkpw(passwordInput, hash)) {
+                request.setAttribute("error", "Contraseña incorrecta.");
+                request.getRequestDispatcher("cuenta.jsp").forward(request, response);
+                return;
+            }
+
+            // Eliminar la compra
+            String deleteSQL = "DELETE FROM compras WHERE id = ? AND id_usuario = ?";
+            try (PreparedStatement ps = conn.prepareStatement(deleteSQL)) {
+                ps.setInt(1, idCompra);
+                ps.setInt(2, idUsuario);
+                int filas = ps.executeUpdate();
+
+                if (filas == 1) {
+                    session.setAttribute("mensaje", "Compra cancelada correctamente.");
+                } else {
+                    session.setAttribute("error", "No se pudo cancelar la compra.");
+                }
+            }
+
+            response.sendRedirect("cuenta.jsp");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Error al cancelar la compra.");
+            request.getRequestDispatcher("cuenta.jsp").forward(request, response);
+        }
+    }
+
+
 }

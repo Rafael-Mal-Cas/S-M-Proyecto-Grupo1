@@ -89,6 +89,16 @@
 
             <button type="submit" style="margin-top:15px;">Confirmar compra</button>
         </form>
+        <form action="comprarCoche" method="post">
+		    <input type="hidden" name="accion" value="cancelar" />
+		    <input type="hidden" name="idCompra" value="${compra.id}" />
+		    
+		    <label>Introduce tu contraseña para cancelar:</label>
+		    <input type="password" name="password" required />
+		    
+		    <button type="submit">Cancelar compra</button>
+		</form>
+        
 
         <p style="color:red; margin-top:10px;"><%= mensaje %></p>
     </div>
