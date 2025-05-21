@@ -132,11 +132,34 @@ if (fotoPerfil == null || fotoPerfil.trim().isEmpty()) {
 
             <span class="info-label">Contraseña:</span>
 			<span>
-			    <input id="pwdField" type="password" value="<%= usuario.getContrasena() %>" readonly>
-			    <button type="button" class="eye-btn" onclick="togglePwd()">
-			        <i id="eyeIcon" class="fas fa-eye"></i>
-			    </button>
+			    <%
+			        String claveVerificada = (String) session.getAttribute("claveVerificada");
+			        if (claveVerificada != null) {
+			    %>
+			        <input id="pwdField" type="password" value="<%= claveVerificada %>" readonly>
+			        <button type="button" class="eye-btn" onclick="togglePwd()">
+			            <i id="eyeIcon" class="fas fa-eye"></i>
+			        </button>
+			    <%
+			        } else {
+			    %>
+			        <form action="verificarClave" method="post" style="display: flex; gap: 0.5rem;">
+			            <input type="password" name="password" placeholder="Verificar contraseña" required>
+			            <button type="submit" class="btn-primary">Verificar</button>
+			        </form>
+			        <%
+			            String status = request.getParameter("status");
+			            if ("error".equals(status)) {
+			        %>
+			            <p style="color:red;">Contraseña incorrecta.</p>
+			        <%
+			            }
+			        %>
+			    <%
+			        }
+			    %>
 			</span>
+
 			
 			<div style="margin-top: 20px;">
 			    <a href="editarPerfil.jsp" class="btn-primary">Editar cuenta</a>
