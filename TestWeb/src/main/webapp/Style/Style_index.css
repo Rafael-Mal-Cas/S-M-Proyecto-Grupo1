@@ -209,6 +209,41 @@ button:hover,
     cursor: pointer;
     border: 2px solid #2196f3;
 }
+
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 40px 20px;
+    margin-top: 40px;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+    gap: 30px;
+}
+
+.footer-section {
+    flex: 1 1 250px;
+}
+
+.footer h4 {
+    margin-bottom: 10px;
+    color: #00bfff;
+}
+
+.footer a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
 /* Responsive */
 @media screen and (max-width: 768px) {
     .card {

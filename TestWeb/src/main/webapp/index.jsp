@@ -79,6 +79,29 @@
     
 </main>
 
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Contacto</h4>
+      <p><strong>Teléfono:</strong> +34 912 345 678</p>
+      <p><strong>Email:</strong> practicalSM@antoniolobato.es</p>
+      <p><strong>Dirección:</strong> Calle Ficticia 123, Granada, España</p>
+    </div>
+    <div class="footer-section">
+      <h4>Horario de atención</h4>
+      <p>Lunes a Viernes: 9:00 - 18:00</p>
+      <p>Sábados: 10:00 - 14:00</p>
+    </div>
+    <div class="footer-section">
+      <h4>Síguenos</h4>
+      <p>1ºDAM - Pracricas S&amp;M</p>
+      <p>Patrocinado por CES Cristo Rey</p>
+      
+    </div>
+  </div>
+</footer>
+
+
 <script>
     function toggleDropdown() {
         document.getElementById("dropdown").classList.toggle("show");

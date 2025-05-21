@@ -68,7 +68,7 @@
             <img src="Style/logo_blanco.png" style="width: 53px; height: 53px;">
         </a>
         <%-- Como el usuario ya está comprobado, mostramos el enlace --%>
-        <a href="catalogo.jsp" style="color: white; text-decoration: none;">Catálogo</a>
+        <a href="catalogo.jsp" style="color: white; text-decoration: none;">CATÁLOGO</a>
     </div>
     <div class="user-menu">
         <img id="avatar-btn" src="<%= fotoPerfil %>" class="user-avatar" alt="Foto de perfil de <%= usuario.getUsuario() %>" onclick="toggleDropdown()" style="cursor:pointer; width: 40px; height: 40px; border-radius: 50%;">
@@ -166,6 +166,29 @@
 <button class="subir" id="scrollTopBtn">
   <img src="https://cdn-icons-png.flaticon.com/512/159/159665.png" alt="Subir" />
 </button>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Contacto</h4>
+      <p><strong>Teléfono:</strong> +34 912 345 678</p>
+      <p><strong>Email:</strong> practicalSM@antoniolobato.es</p>
+      <p><strong>Dirección:</strong> Calle Ficticia 123, Granada, España</p>
+    </div>
+    <div class="footer-section">
+      <h4>Horario de atención</h4>
+      <p>Lunes a Viernes: 9:00 - 18:00</p>
+      <p>Sábados: 10:00 - 14:00</p>
+    </div>
+    <div class="footer-section">
+      <h4>Síguenos</h4>
+      <p>1ºDAM - Pracricas S&amp;M</p>
+      <p>Patrocinado por CES Cristo Rey</p>
+      
+    </div>
+  </div>
+</footer>
+
 
 <script>
 let lastScroll = 0;

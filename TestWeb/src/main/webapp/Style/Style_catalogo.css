@@ -37,6 +37,7 @@
 }
 
 .navbar {
+	font-weight: bold;
 	background:#333;
     color:#fff;
     display:flex;
@@ -52,6 +53,13 @@
 .navbar.hidden {
     top: -100px; /* Ajusta según la altura del navbar */
 }
+
+.navbar a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: text-decoration 0.2s ease;
+}
+
 
 .logo {
     font-size: 1.5em;
@@ -345,6 +353,42 @@
     cursor: pointer;
     border: 2px solid #2196f3;
 }
+
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 40px 20px;
+    margin-top: 40px;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+    gap: 30px;
+}
+
+.footer-section {
+    flex: 1 1 250px;
+}
+
+.footer h4 {
+    margin-bottom: 10px;
+    color: #00bfff;
+}
+
+.footer a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
 
 /* Responsive */
 
