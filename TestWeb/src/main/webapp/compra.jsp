@@ -90,22 +90,23 @@
         <p><strong>Combustible:</strong> <%= vehiculo.getCombustible() %></p>
 
         <form action="<%= request.getRequestURI() + "?idVehiculo=" + vehiculo.getId() %>" method="post">
-            <label for="metodoPago">Método de pago:</label>
-			<select name="metodoPago" id="metodoPago" required>
-			    <option value="">Seleccione un método</option>
-			    <option value="tarjeta">Tarjeta de crédito</option>
-			    <option value="paypal">PayPal</option>
-			    <option value="transferencia">Transferencia bancaria</option>
-			</select>
-
-
-            <div id="pagoManualContainer" style="display:none; margin-top:10px;">
-                <label for="pagoManual">Precio a pagar (€):</label>
-                <input type="number" name="pagoManual" id="pagoManual" step="0.01" min="0" />
-            </div>
-
-            <button type="submit" style="margin-top:15px;">Confirmar compra</button>
-        </form>
+	    <div style="margin-bottom: 15px;">
+	        <label for="metodoPago" style="display: block; margin-bottom: 5px; font-weight: bold; color: #444;">Método de pago:</label>
+	        <select name="metodoPago" id="metodoPago" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+	            <option value="">Seleccione un método</option>
+	            <option value="tarjeta">Tarjeta de crédito</option>
+	            <option value="paypal">PayPal</option>
+	            <option value="transferencia">Transferencia bancaria</option>
+	        </select>
+	    </div>
+	
+	    <div id="pagoManualContainer" style="display:none; margin-bottom: 15px;">
+	        <label for="pagoManual" style="display: block; margin-bottom: 5px; font-weight: bold; color: #444;">Precio a pagar (€):</label>
+	        <input type="number" name="pagoManual" id="pagoManual" step="0.01" min="0" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"/>
+	    </div>
+	
+	    <button type="submit" class="btn-comprar">Confirmar compra</button>
+	</form>
         <form action="comprarCoche" method="post">
 		    <input type="hidden" name="accion" value="cancelar" />
 		    <input type="hidden" name="idCompra" value="${compra.id}" />
