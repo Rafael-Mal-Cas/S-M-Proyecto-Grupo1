@@ -13,7 +13,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Editar Perfil - <%= usuario.getNombre() %></title>
-    <link rel="stylesheet" href="Style/Style_Cuenta.css"> <!-- o la hoja que uses -->
+    <link rel="stylesheet" href="Style/Style_Perfil.css"> <!-- o la hoja que uses -->
 </head>
 <body>
 <main class="contenido">
