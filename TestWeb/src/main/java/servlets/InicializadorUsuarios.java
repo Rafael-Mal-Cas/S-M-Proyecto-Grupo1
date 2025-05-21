@@ -13,12 +13,19 @@ import javax.servlet.annotation.WebListener;
 
 import modelo.User;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @WebListener
 public class InicializadorUsuarios implements ServletContextListener {
 
+    private static final Logger logger = LogManager.getLogger(InicializadorUsuarios.class);
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        logger.info("Inicialización del contexto: cargando usuarios desde base de datos");
         cargarUsuariosDesdeBD(sce);
+        logger.info("Carga de usuarios completada");
     }
 
     private void cargarUsuariosDesdeBD(ServletContextEvent sce) {
@@ -28,6 +35,8 @@ public class InicializadorUsuarios implements ServletContextListener {
         try (Connection conn = utils.DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
+
+            logger.info("Ejecutando consulta SQL para cargar usuarios");
 
             while (rs.next()) {
                 User user = new User();
@@ -44,20 +53,23 @@ public class InicializadorUsuarios implements ServletContextListener {
             }
 
             sce.getServletContext().setAttribute("usuarios", usuarios);
-
             int maxId = usuarios.stream()
                     .mapToInt(User::getId)
                     .max()
                     .orElse(0);
             sce.getServletContext().setAttribute("idCounter", maxId + 1);
 
+            logger.info("Usuarios cargados en contexto. Total usuarios: {}", usuarios.size());
+
         } catch (SQLException e) {
+            logger.error("Error al cargar usuarios desde BD externa", e);
             throw new RuntimeException("Error al cargar usuarios desde BD externa", e);
         }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        logger.info("Destruyendo contexto: limpiando atributos de usuarios");
         sce.getServletContext().removeAttribute("usuarios");
         sce.getServletContext().removeAttribute("idCounter");
     }

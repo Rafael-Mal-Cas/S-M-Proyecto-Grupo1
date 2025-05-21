@@ -15,13 +15,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebServlet("/exportCatalogo")
 public class ExportCatalogoCSV extends HttpServlet {
 
+    private static final Logger logger = LogManager.getLogger(ExportCatalogoCSV.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
+
+        logger.info("Inicio de exportación de catálogo a CSV");
 
         resp.setContentType("text/csv; charset=UTF-8");
         resp.setHeader("Content-Disposition", "attachment; filename=\"BMW_catalogo.csv\"");
@@ -34,9 +40,12 @@ public class ExportCatalogoCSV extends HttpServlet {
              );
              ResultSet rs = st.executeQuery()) {
 
+            logger.info("Consulta SQL ejecutada correctamente");
+
             // Cabecera CSV
             out.println("marca,modelo,anio,color,motor,combustible,precio,imagen");
 
+            int registros = 0;
             while (rs.next()) {
                 out.printf("%s,%s,%d,%s,%s,%s,%.2f,%s%n",
                         rs.getString("marca"),
@@ -47,12 +56,15 @@ public class ExportCatalogoCSV extends HttpServlet {
                         rs.getString("combustible"),
                         rs.getDouble("precio"),
                         rs.getString("imagen"));
+                registros++;
             }
 
+            logger.info("Exportación completada. Registros exportados: {}", registros);
+
         } catch (SQLException e) {
+            logger.error("Error al exportar el catálogo a CSV", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                            "Error exportando CSV");
-            e.printStackTrace();
         }
     }
 }

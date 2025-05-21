@@ -4,38 +4,41 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+
 import modelo.User;
 import org.mindrot.jbcrypt.BCrypt;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebServlet("/verificarClave")
 public class VerificarClave extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static final Logger logger = LogManager.getLogger(VerificarClave.class);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        logger.debug("Inicio de verificación de contraseña");
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
 
-        // Recuperar el usuario autenticado
         User usuario = (User) session.getAttribute("usuario");
         if (usuario == null) {
+            logger.warn("Usuario no autenticado intentando verificar contraseña");
             response.sendRedirect("login.jsp");
             return;
         }
 
-        // Obtener la contraseña introducida
         String passwordInput = request.getParameter("password");
-        // Contraseña encriptada guardada (desde BD en el objeto `User`)
-        String hashGuardado = usuario.getContrasena(); // debe ser el hash en BCrypt
+        String hashGuardado = usuario.getContrasena();
 
-        // Comparar usando BCrypt
         if (BCrypt.checkpw(passwordInput, hashGuardado)) {
-            // Coincide -> almacenar temporalmente la contraseña desencriptada en sesión
+            logger.info("Contraseña verificada correctamente para usuario ID: " + usuario.getId());
             session.setAttribute("claveVerificada", passwordInput);
             response.sendRedirect("Cuenta.jsp?status=ok");
         } else {
-            // No coincide -> error
+            logger.warn("Intento fallido de verificación de contraseña para usuario ID: " + usuario.getId());
             response.sendRedirect("Cuenta.jsp?status=error");
         }
     }

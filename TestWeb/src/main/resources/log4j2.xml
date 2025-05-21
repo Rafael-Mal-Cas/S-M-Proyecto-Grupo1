@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <!-- Appender que rota el log -->
+        <RollingFile name="RollingFileLogger"
+                     fileName="${sys:user.home}/miapp_logs/usuarios.log"
+                     filePattern="${sys:user.home}/miapp_logs/usuarios-%i.log">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
+
+        <!-- Log fijo sin rotación (opcional) -->
+        <File name="FileLogger" fileName="${sys:user.home}/miapp_logs/info.log">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+        </File>
+
+        <!-- Log en consola -->
+        <Console name="ConsoleLogger" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="RollingFileLogger"/>
+            <AppenderRef ref="FileLogger"/>
+            <AppenderRef ref="ConsoleLogger"/>
+        </Root>
+    </Loggers>
+</Configuration>

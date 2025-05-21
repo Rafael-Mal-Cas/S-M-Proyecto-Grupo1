@@ -5,17 +5,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import utils.DatabaseConnection;
 
 @WebServlet("/MiServlet")
 public class MiServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    // Logger con Log4j2 — ajusta el nombre de la clase si quieres
+    private static final Logger logger = LogManager.getLogger(MiServlet.class);
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
 
@@ -24,9 +31,9 @@ public class MiServlet extends HttpServlet {
         ResultSet rs = null;
 
         try {
+            logger.info("Iniciando doGet - obteniendo conexión...");
             conn = DatabaseConnection.getConnection();
 
-            // Obtener el nombre del usuario con ID = 1
             String sql = "SELECT nombre FROM usuarios_simplificados WHERE id = ?";
             stmt = conn.prepareStatement(sql);
             stmt.setInt(1, 1);
@@ -35,31 +42,37 @@ public class MiServlet extends HttpServlet {
 
             if (rs.next()) {
                 String nombre = rs.getString("nombre");
+                logger.info("Nombre encontrado: {}", nombre);
                 request.setAttribute("miDato", nombre);
             } else {
+                logger.warn("No se encontró el usuario con ID = 1");
                 request.setAttribute("miDato", "No se encontró el usuario con ID = 1");
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error al acceder a la base de datos (GET)", e);
             request.setAttribute("error", "Error al acceder a la base de datos");
         } finally {
             try {
                 if (rs != null) rs.close();
                 if (stmt != null) stmt.close();
                 if (conn != null) conn.close();
+                logger.info("Recursos cerrados correctamente (GET).");
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error("Error cerrando recursos (GET)", e);
             }
         }
 
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
 
         String nuevoNombre = request.getParameter("miDato");
+        logger.info("Nuevo nombre recibido desde formulario: {}", nuevoNombre);
+
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -74,20 +87,23 @@ public class MiServlet extends HttpServlet {
             int filasAfectadas = stmt.executeUpdate();
 
             if (filasAfectadas > 0) {
+                logger.info("Nombre actualizado correctamente.");
                 request.setAttribute("miDato", nuevoNombre);
             } else {
+                logger.warn("No se pudo actualizar el usuario.");
                 request.setAttribute("error", "No se pudo actualizar el usuario");
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error al guardar en la base de datos (POST)", e);
             request.setAttribute("error", "Error al guardar en la base de datos");
         } finally {
             try {
                 if (stmt != null) stmt.close();
                 if (conn != null) conn.close();
+                logger.info("Recursos cerrados correctamente (POST).");
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error("Error cerrando recursos (POST)", e);
             }
         }
 

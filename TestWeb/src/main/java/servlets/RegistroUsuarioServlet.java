@@ -4,22 +4,25 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
+
 import org.mindrot.jbcrypt.BCrypt;
 import utils.DatabaseConnection;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @WebServlet("/registroUsuario")
 public class RegistroUsuarioServlet extends HttpServlet {
+    private static final Logger logger = LogManager.getLogger(RegistroUsuarioServlet.class);
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. Obtener parámetros del formulario
         String nombre = request.getParameter("nombre");
         String apellidos = request.getParameter("apellidos");
         String genero = request.getParameter("genero");
@@ -29,7 +32,7 @@ public class RegistroUsuarioServlet extends HttpServlet {
         String password = request.getParameter("contrasena");
         String confirmPassword = request.getParameter("confirmar_contrasena");
 
-        // 2. Validaciones básicas
+        // Validación de campos
         if (nombre == null || nombre.trim().isEmpty() ||
             apellidos == null || apellidos.trim().isEmpty() ||
             genero == null || genero.trim().isEmpty() ||
@@ -38,36 +41,42 @@ public class RegistroUsuarioServlet extends HttpServlet {
             email == null || email.trim().isEmpty() ||
             password == null || password.trim().isEmpty()) {
 
+            logger.warn("Registro fallido: campos vacíos detectados");
             request.setAttribute("error", "Todos los campos son obligatorios.");
             request.getRequestDispatcher("Registro.jsp").forward(request, response);
             return;
         }
 
         if (!password.equals(confirmPassword)) {
+            logger.warn("Registro fallido: contraseñas no coinciden para el usuario: " + username);
             request.setAttribute("error", "Las contraseñas no coinciden.");
             request.getRequestDispatcher("Registro.jsp").forward(request, response);
             return;
         }
 
-        // Encriptar contraseña
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             if (usuarioExiste(conn, username, email)) {
+                logger.warn("Intento de registro con usuario/email duplicado: " + username + ", " + email);
                 request.setAttribute("error", "El nombre de usuario o email ya está en uso.");
                 request.getRequestDispatcher("Registro.jsp").forward(request, response);
                 return;
             }
 
-            if (registrarUsuario(conn, nombre, apellidos, genero, numeroTelefono, username, email, hashedPassword)) {
+            boolean exito = registrarUsuario(conn, nombre, apellidos, genero, numeroTelefono, username, email, hashedPassword);
+            if (exito) {
+                logger.info("Nuevo usuario registrado correctamente: " + username);
                 request.getSession().setAttribute("registroExitoso", "Usuario registrado correctamente.");
                 response.sendRedirect("Registro.jsp");
             } else {
+                logger.error("Error al registrar el usuario: " + username);
                 request.setAttribute("error", "Error al registrar el usuario.");
                 request.getRequestDispatcher("Registro.jsp").forward(request, response);
             }
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Excepción SQL durante el registro del usuario " + username + ": " + e.getMessage());
             request.setAttribute("error", "Error de base de datos: " + e.getMessage());
             request.getRequestDispatcher("Registro.jsp").forward(request, response);
         }

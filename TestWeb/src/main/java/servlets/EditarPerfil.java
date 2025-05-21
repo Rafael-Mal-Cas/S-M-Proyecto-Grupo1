@@ -1,30 +1,29 @@
 package servlets;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
+import javax.servlet.http.*;
 
 import modelo.User;
 import utils.DatabaseConnection;
 
 @WebServlet("/editarPerfil")
-@MultipartConfig(maxFileSize = 1024 * 1024 * 5) // Máximo 5MB para subir imagen
+@MultipartConfig(maxFileSize = 1024 * 1024 * 5) // Máximo 5MB
 public class EditarPerfil extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	request.setCharacterEncoding("UTF-8");
+
+        request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
         User usuario = (User) session.getAttribute("usuario");
 
@@ -33,16 +32,14 @@ public class EditarPerfil extends HttpServlet {
             return;
         }
 
-        // Obtener datos del formulario
         String nombre = request.getParameter("nombre");
         String apellidos = request.getParameter("apellidos");
         String email = request.getParameter("email");
         String telefono = request.getParameter("telefono");
         String genero = request.getParameter("genero");
 
-        // Procesar la imagen (si se ha subido una nueva)
         Part imagenPart = request.getPart("imagen");
-        String nombreImagen = usuario.getImagen(); // Por defecto, mantiene la actual
+        String nombreImagen = usuario.getImagen();
 
         if (imagenPart != null && imagenPart.getSize() > 0) {
             String nombreArchivo = Paths.get(imagenPart.getSubmittedFileName()).getFileName().toString();
@@ -54,12 +51,9 @@ public class EditarPerfil extends HttpServlet {
 
             String rutaCompleta = ruta + File.separator + nombreArchivo;
             imagenPart.write(rutaCompleta);
-
-            // Guardamos la ruta relativa para la base de datos y para mostrarla
             nombreImagen = "imagenes/perfil/" + nombreArchivo;
         }
 
-        // Actualizar datos en base de datos
         try (Connection conn = DatabaseConnection.getConnection()) {
             String sql = "UPDATE usuarios_simplificados SET nombre=?, apellidos=?, email=?, numeroTelefono=?, genero=?, imagen=? WHERE id=?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -73,7 +67,6 @@ public class EditarPerfil extends HttpServlet {
                 stmt.executeUpdate();
             }
 
-            // Actualizamos el usuario en sesión con los datos nuevos
             usuario.setNombre(nombre);
             usuario.setApellidos(apellidos);
             usuario.setEmail(email);
@@ -83,7 +76,19 @@ public class EditarPerfil extends HttpServlet {
 
             session.setAttribute("usuario", usuario);
 
-            // Redirigimos a la página de perfil para ver los cambios
+            // ───────────── REGISTRO EN LOG ─────────────
+            String rutaLog = getServletContext().getRealPath("/logs/acciones.log");
+            File archivoLog = new File(rutaLog);
+            archivoLog.getParentFile().mkdirs();
+
+            try (FileWriter writer = new FileWriter(archivoLog, true)) {
+                String linea = String.format("Usuario con ID %d editó su perfil (%s)%n",
+                        usuario.getId(), LocalDateTime.now());
+                writer.write(linea);
+            } catch (IOException ex) {
+                ex.printStackTrace(); // Solo log en consola si hay error
+            }
+
             response.sendRedirect(request.getContextPath() + "/Cuenta.jsp");
         } catch (SQLException e) {
             e.printStackTrace();
