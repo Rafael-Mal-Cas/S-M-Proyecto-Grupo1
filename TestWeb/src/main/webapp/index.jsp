@@ -82,10 +82,10 @@
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-section">
-      <h4>Contacto</h4>
-      <p><strong>Teléfono:</strong> +34 912 345 678</p>
-      <p><strong>Email:</strong> practicalSM@antoniolobato.es</p>
-      <p><strong>Dirección:</strong> Calle Ficticia 123, Granada, España</p>
+      <h4>Información de contacto</h4>
+		<p><strong>Teléfono:</strong> <a href="tel:+34912345678" style="color: inherit; text-decoration: none;">+34 912 345 678</a></p>
+		<p><strong>Correo electrónico:</strong> <a href="mailto:practicalSM@antoniolobato.es" style="color: inherit; text-decoration: none;">practicalSM@antoniolobato.es</a></p>
+		<p><strong>Dirección postal:</strong> Calle Ficticia 123, 18000 Granada, España</p>
     </div>
     <div class="footer-section">
       <h4>Horario de atención</h4>
