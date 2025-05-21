@@ -28,7 +28,7 @@
                 <input type="submit" value="Entrar">
             </form>
             <p style="margin-top: 15px;">
-                ¿No tienes cuenta? <a href="Registro.jsp">Regístrate aquí</a>.
+                ¿No tienes cuenta? <a href="Registro.jsp">Regístrate aquí</a>
             </p>
         </div>
     </main>
