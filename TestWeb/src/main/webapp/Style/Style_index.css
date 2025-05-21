@@ -9,6 +9,9 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f0f2f5;
+     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Navbar */
@@ -74,8 +77,14 @@ body {
 }
 
 /* Main content */
+main {
+	flex: 1;
+    min-height: calc(105vh - 60px - 200px); /* Ajusta los valores a la altura real de navbar y footer */
+    padding-top: 60px; /* Altura de la navbar para evitar que se solape el contenido */
+}
 .contenido {
     display: flex;
+     
     justify-content: center;
     align-items: center;
     padding: 40px 20px;
@@ -215,6 +224,7 @@ button:hover,
     color: #fff;
     padding: 40px 20px;
     margin-top: 40px;
+    bottom: 0;
 }
 
 .footer-content {
