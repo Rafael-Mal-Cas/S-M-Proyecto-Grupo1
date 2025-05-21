@@ -201,7 +201,14 @@ button:hover,
 .form-container input[type="submit"]:hover {
     background-color: #0b7dda;
 }
-
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid #2196f3;
+}
 /* Responsive */
 @media screen and (max-width: 768px) {
     .card {
