@@ -79,7 +79,7 @@ body {
 /* Main content */
 main {
 	flex: 1;
-    min-height: calc(105vh - 60px - 200px); /* Ajusta los valores a la altura real de navbar y footer */
+    min-height: calc(102.6vh - 60px - 200px); /* Ajusta los valores a la altura real de navbar y footer */
     padding-top: 60px; /* Altura de la navbar para evitar que se solape el contenido */
 }
 .contenido {
