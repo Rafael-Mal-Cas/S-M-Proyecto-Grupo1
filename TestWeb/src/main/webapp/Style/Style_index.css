@@ -16,6 +16,7 @@ body {
 
 /* Navbar */
 .navbar {
+	font-weight: bold;
 	background:#333;
     color:#fff;
     display:flex;

@@ -100,7 +100,7 @@ if (fotoPerfil == null || fotoPerfil.trim().isEmpty()) {
     <a href="index.jsp" class="logo" style="cursor: pointer;">
         <img src="Style/logo_blanco.png" style="width: 53px; height: 53px;">
     </a>
-    <a href="catalogo.jsp" style="cursor: pointer; color: white; text-decoration: none; text-align: left;">Catálogo</a>
+    <!-- <a href="catalogo.jsp" style="cursor: pointer; color: white; text-decoration: none; text-align: left;">Catálogo</a> -->
     
     <div class="user-menu">
         <img id="avatar-btn" src="<%= fotoPerfil %>" class="user-avatar" alt="Perfil">
